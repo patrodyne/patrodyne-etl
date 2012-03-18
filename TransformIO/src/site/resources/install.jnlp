@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://repo1.maven.org/maven2/org/patrodyne/patrodyne-etl-TransformIO/1.0.1">
+
+	<information>
+		<title>Patrodyne ETL TransformIO Installer</title>
+		<vendor>patrodyne.org</vendor>
+		<offline-allowed/>
+	</information>
+
+	<update check="background"/>
+
+	<security>
+		<all-permissions/>
+	</security>
+
+	<resources>
+		<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+		<jar href="patrodyne-etl-TransformIO-1.0.1-install.jar"/>
+	</resources>
+
+	<application-desc
+		name="Patrodyne ETL TransformIO Installer"
+		main-class="com.izforge.izpack.installer.Installer"
+		width="800"
+		height="500"
+	/>
+
+</jnlp>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

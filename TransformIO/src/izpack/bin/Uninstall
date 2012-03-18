@@ -1,0 +1,3 @@
+#!/bin/sh
+java -jar "%{INSTALL_PATH}/Uninstaller/uninstaller.jar"
+# vi:set tabstop=4 hardtabs=4 shiftwidth=4:

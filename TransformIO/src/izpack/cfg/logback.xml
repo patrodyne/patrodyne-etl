@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Usage: -Dlogback.configurationFile=/path/to/logback.xml -->
+<configuration>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{HH:mm:ss.SSS} %-5level %logger - %msg%n</Pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>log/TransformIO.log</file>
+
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]\t%-5level %logger\t%msg%n</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>log/TransformIO.%i.log.zip</FileNamePattern>
+			<MinIndex>1</MinIndex>
+			<MaxIndex>10</MaxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>2MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<logger name="java"		level="INFO"/>
+	<logger name="javax"	level="INFO"/>
+	<logger name="com"		level="INFO"/>
+	<logger name="edu"		level="INFO"/>
+	<logger name="net"		level="INFO"/>
+	<logger name="org"		level="INFO"/>
+
+	<!--
+		<appender-ref ref="CONSOLE"/>
+	-->
+	<root level="INFO">
+		<appender-ref ref="FILE"/>
+	</root>
+</configuration>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

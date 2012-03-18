@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- IzPack shortcuts, Linux -->
+<!-- For categories, see http://standards.freedesktop.org/menu-spec/latest/apa.html -->
+<shortcuts>
+	<skipIfNotSupported/>
+	<defaultCurrentUser/>
+	<shortcut 
+		name="${APP_NAME}"
+		description="Launch ${APP_NAME}"
+		target="java"
+		commandLine="-D${JVM_CFG_LOG} -Djava.ext.dirs=${EXT_DIR} -jar &quot;${INSTALL_PATH}/${FINAL_NAME}.jar&quot;"
+		workingDirectory="${INSTALL_PATH}"
+		iconFile="${INSTALL_PATH}/${ICN_DIR}/${APP_NAME}.png"
+		initialState="normal"
+
+		desktop="yes"
+		programGroup="yes"
+		applications="no"
+		startMenu="no"
+		startup="no"
+
+		categories="Application;Office;"
+		type="Application"
+		terminal="false"
+		encoding="UTF-8"
+	>
+		<createForPack name="Core"/>
+	</shortcut>
+</shortcuts>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- IzPack Configuration, refs are relative to izpack build/base path. -->
+<installation version="1.0">
+	<info>
+		<appname>${project.name}</appname>
+		<appversion>${project.version}</appversion>
+		<authors>
+			<author name="Patrodyne" email="rick.osullivan@patrodyne.org" />
+		</authors>
+		<url>${project.url}</url>
+		<javaversion>1.6</javaversion>
+		<requiresjdk>no</requiresjdk>
+	</info>
+
+	<variables>
+		<variable name="CFG_DIR" value="${cfgdir}"/>
+		<variable name="EXT_DIR" value="${extdir}"/>
+		<variable name="ICN_DIR" value="${icndir}"/>
+		<variable name="LIB_DIR" value="${libdir}"/>
+		<variable name="LOG_DIR" value="${logdir}"/>
+		<variable name="SUB_DIR" value="Patrodyne/${project.artifactId}/${project.version}"/>
+		<variable name="FINAL_NAME" value="${project.build.finalName}"/>
+	</variables>
+
+	<dynamicvariables>
+		<variable name="JVM_CFG_LOG" value="logback.configurationFile=${cfgdir}/logback.xml" condition="LogbackSelected" />
+		<variable name="JVM_CFG_LOG" value="log4j.configuration=file:${cfgdir}/log4j.xml" condition="Log4jSelected" />
+		<variable name="JVM_CFG_LOG" value="java.util.logging.config.file=${cfgdir}/logging.properties" condition="JULSelected" />
+	</dynamicvariables>
+	
+	<conditions>
+		<condition type="PackSelection" id="LogbackSelected">
+			<packid>Logback</packid>
+		</condition>
+		<condition type="PackSelection" id="Log4jSelected">
+			<packid>Log4j</packid>
+		</condition>
+		<condition type="PackSelection" id="JULSelected">
+			<packid>JUL</packid>
+		</condition>
+		<condition type="not" id="LogbackIsSelectable">
+			<condition type="or" id="LogbackIsNotSelectable">
+				<condition type="ref" refid="Log4jSelected" />
+				<condition type="ref" refid="JULSelected" />
+			</condition>
+		</condition>
+		<condition type="not" id="Log4jIsSelectable">
+			<condition type="or" id="Log4jIsNotSelectable">
+				<condition type="ref" refid="LogbackSelected" />
+				<condition type="ref" refid="JULSelected" />
+			</condition>
+		</condition>
+		<condition type="not" id="JULIsSelectable">
+			<condition type="or" id="JULIsNotSelectable">
+				<condition type="ref" refid="LogbackSelected" />
+				<condition type="ref" refid="Log4jSelected" />
+			</condition>
+		</condition>
+	</conditions>
+	
+	<guiprefs width="800" height="520" resizable="no" />
+ 
+	<locale>
+		<langpack iso3="eng" />
+	</locale>
+	
+	<resources>
+		<res id="TargetPanel.dir" src="InstallPath.txt" parse="yes" />
+		<res id="Installer.image" src="InstallerLeft.png" />
+		<res id="Unix_shortcutSpec.xml" src="linux_shortcuts.xml" />
+		<res id="shortcutSpec.xml" src="winos_shortcuts.xml" />
+	</resources>
+
+	<panels>
+		<panel classname="HelloPanel"/>
+		<panel classname="TargetPanel"/>	   
+		<panel classname="TreePacksPanel"/>
+		<panel classname="SummaryPanel"/>
+		<panel classname="InstallPanel"/>		
+		<panel classname="ShortcutPanel"/>
+		<panel classname="FinishPanel"/>
+	</panels>
+ 
+	<packs>
+		<pack name="Core" required="yes">
+			<description>Core installation files</description>
+			<file src="README.html" targetdir="${INSTALL_PATH}"/>
+			<file src="../${FINAL_NAME}.jar" targetdir="${INSTALL_PATH}"/>
+			<fileset dir="${libdir}" targetdir="${INSTALL_PATH}/${libdir}" casesensitive="yes">
+				<include name="**"/>
+			</fileset>
+			<!-- Unix -->
+			<fileset dir="${icndir}" targetdir="${INSTALL_PATH}/${icndir}" casesensitive="yes" os="unix">
+				<include name="**/*.png"/>
+			</fileset>
+			<file src="bin/${project.name}" targetdir="${INSTALL_PATH}" os="unix"/>
+			<parsable targetfile="${INSTALL_PATH}/${project.name}" type="shell" os="unix"/>
+			<executable targetfile="${INSTALL_PATH}/${project.name}" stage="never" keep="true" os="unix"/>
+			<file src="bin/Uninstall" targetdir="${INSTALL_PATH}" os="unix"/>
+			<parsable targetfile="${INSTALL_PATH}/Uninstall" type="shell" os="unix"/>
+			<executable targetfile="${INSTALL_PATH}/Uninstall" stage="never" keep="true" os="unix"/>
+			<!-- Windows -->
+			<fileset dir="${icndir}" targetdir="${INSTALL_PATH}/${icndir}" casesensitive="yes" os="windows">
+				<include name="**/*.ico"/>
+			</fileset>
+			<file src="bin/${project.name}.cmd" targetdir="${INSTALL_PATH}" os="windows"/>
+			<parsable targetfile="${INSTALL_PATH}/${project.name}.cmd" type="shell" os="windows"/>
+		</pack>
+		<pack name="Logger" required="yes">
+			<description>Select one logging framework. HINT: Uncheck one to select another.</description>
+			<file src="packs/logger/slf4j-api-${slf4j.version}.jar" targetdir="${INSTALL_PATH}/${extdir}"/>
+			<fileset dir="${logdir}" targetdir="${INSTALL_PATH}/${logdir}" casesensitive="yes">
+				<include name="**"/>
+			</fileset>
+		</pack>
+		<pack name="Logback" parent="Logger" required="no" preselected="yes" condition="LogbackIsSelectable">
+			<description>Logback is the successor to the popular Log4j project.</description>
+			<file src="${cfgdir}/logback.xml" targetdir="${INSTALL_PATH}/${cfgdir}"/>
+			<fileset dir="packs/logger/logback" targetdir="${INSTALL_PATH}/${extdir}" casesensitive="yes">
+				<include name="**"/>
+			</fileset>
+		</pack>
+		<pack name="Log4j" parent="Logger" required="no" preselected="no" condition="Log4jIsSelectable">
+			<description>Classic logging system from the Apache Software Foundation.</description>
+			<file src="${cfgdir}/log4j.dtd" targetdir="${INSTALL_PATH}/${cfgdir}"/>
+			<file src="${cfgdir}/log4j.xml" targetdir="${INSTALL_PATH}/${cfgdir}"/>
+			<fileset dir="packs/logger/log4j" targetdir="${INSTALL_PATH}/${extdir}" casesensitive="yes">
+				<include name="**"/>
+			</fileset>
+		</pack>
+		<pack name="JUL" parent="Logger" required="no" preselected="no" condition="JULIsSelectable">
+			<description>Java Util Logger.</description>
+			<file src="${cfgdir}/logging.properties" targetdir="${INSTALL_PATH}/${cfgdir}"/>
+			<fileset dir="packs/logger/jul" targetdir="${INSTALL_PATH}/${extdir}" casesensitive="yes">
+				<include name="**"/>
+			</fileset>
+		</pack>
+	</packs>
+
+	<native type="izpack" name="ShellLink.dll">
+		<os family="windows" />
+	</native>
+
+	<native type="izpack" name="ShellLink_x64.dll">
+		<os family="windows"/>
+	</native>
+	
+</installation>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

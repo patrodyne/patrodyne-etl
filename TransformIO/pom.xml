@@ -1,0 +1,481 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<groupId>org.patrodyne</groupId>
+	<artifactId>patrodyne-etl-TransformIO</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<properties>
+		<color.scheme>ColorScheme-F6D09C.properties</color.scheme>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<patrodyne.home>${basedir}/../../patrodyne.github.com</patrodyne.home>
+		<site.home>${patrodyne.home}/sites/etl-TransformIO</site.home>
+		<source>${basedir}/src</source>
+		<target>${project.build.directory}</target>
+		<icndir>icons</icndir>
+		<cfgdir>cfg</cfgdir>
+		<libdir>lib</libdir>
+		<extdir>lib/ext</extdir>
+		<logdir>log</logdir>
+		<izpack.suffix>install</izpack.suffix>
+		<izpack.source>${source}/izpack</izpack.source>
+		<izpack.target>${target}/izpack</izpack.target>
+		<slf4j.version>1.6.4</slf4j.version>
+	</properties>
+
+	<name>TransformIO</name>
+	<url>http://patrodyne.org/sites/etl-TransformIO</url>
+	<inceptionYear>2012</inceptionYear>
+
+	<description>Patrodyne modules for Extracting, Transforming and Loading (ETL) data from files or streams.</description>
+
+	<organization>
+		<name>Patrodyne</name>
+		<url>http://patrodyne.org</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>LGPL v3</name>
+			<distribution>repo and manual</distribution>
+			<url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git://github.com/patrodyne/patrodyne-etl.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/patrodyne/patrodyne-etl.git</developerConnection>
+		<url>https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/patrodyne/patrodyne-etl/issues</url>
+	</issueManagement>
+
+	<developers>
+		<developer>
+			<id>patrodyne</id>
+			<name>Rick</name>
+			<email>rick.osullivan@patrodyne.org</email>
+			<url>http://resume.github.com/?patrodyne</url>
+			<organization>Patrodyne</organization>
+			<organizationUrl>http://patrodyne.org</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<locales>en</locales>
+						<outputDirectory>${site.home}</outputDirectory>
+						<generateProjectInfo>true</generateProjectInfo>
+						<generateSitemap>true</generateSitemap>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.8</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-changelog-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-report-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.7</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.2</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.2.2</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.codehaus.izpack</groupId>
+					<artifactId>izpack-maven-plugin</artifactId>
+					<version>1.0-alpha-5</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.codehaus.izpack</groupId>
+							<artifactId>izpack-standalone-compiler</artifactId>
+							<version>4.3.5</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jarsigner-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<reportPlugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<reportSets>
+								<reportSet>
+									<reports>
+										<report>issue-tracking</report>
+										<report>license</report>
+										<report>plugin-management</report>
+										<report>plugins</report>
+										<report>scm</report>
+										<report>summary</report>
+									</reports>
+								</reportSet>
+							</reportSets>
+						</plugin>
+
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<configuration>
+								<header>&lt;a href='${project.url}' target='_top'&gt;${project.name}&lt;/a&gt;</header>
+							</configuration>
+						</plugin>
+						
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-report-plugin</artifactId>
+						</plugin>
+
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-changelog-plugin</artifactId>
+						</plugin>
+					</reportPlugins>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>FilterSite</id>
+						<phase>site</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy file="src/site/templates/css/site.css" toFile="${site.home}/css/site.css" overwrite="true">
+									<filterset>
+										<filtersfile file="src/site/properties/css/${color.scheme}" />
+									</filterset>
+								</copy>
+								<copy file="src/site/templates/css/apidocs.css" toFile="${site.home}/apidocs/stylesheet.css" overwrite="true">
+									<filterset>
+										<filtersfile file="src/site/properties/css/${color.scheme}" />
+									</filterset>
+								</copy>
+								<copy file="src/site/templates/css/apidocs.css" toFile="${site.home}/testapidocs/stylesheet.css" overwrite="true">
+									<filterset>
+										<filtersfile file="src/site/properties/css/${color.scheme}" />
+									</filterset>
+								</copy>
+							</target>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>TweakSite</id>
+						<phase>site</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<fixcrlf srcdir="${site.home}" includes="**/*.html" eol="lf" />
+							</target>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>CleanSite</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<delete dir="${site.home}" defaultexcludes="true" includeemptydirs="true" />
+							</target>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>prepare-izpack</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy todir="${izpack.target}">
+									<fileset dir="${izpack.source}" />
+								</copy>
+								<mkdir dir="${izpack.target}/${extdir}" />
+								<mkdir dir="${izpack.target}/${logdir}" />
+							</target>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>organize-izpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<!-- Organize dependencies into logger packs -->
+								<move todir="${izpack.target}/packs/logger">
+									<fileset dir="${izpack.target}/${libdir}">
+										<include name="slf4j-api*" />
+									</fileset>
+								</move>
+								<move todir="${izpack.target}/packs/logger/logback">
+									<fileset dir="${izpack.target}/${libdir}">
+										<include name="logback*" />
+									</fileset>
+								</move>
+								<move todir="${izpack.target}/packs/logger/log4j">
+									<fileset dir="${izpack.target}/${libdir}">
+										<include name="log4j*" />
+										<include name="slf4j-log4j*" />
+									</fileset>
+								</move>
+								<move todir="${izpack.target}/packs/logger/jul">
+									<fileset dir="${izpack.target}/${libdir}">
+										<include name="slf4j-jdk14*" />
+									</fileset>
+								</move>
+								<move todir="${izpack.target}/packs/logger/simple">
+									<fileset dir="${izpack.target}/${libdir}">
+										<include name="slf4j-simple*" />
+									</fileset>
+								</move>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-library-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${izpack.target}/${libdir}</outputDirectory>
+							<excludeGroupIds>org.codehaus.izpack</excludeGroupIds>
+							<excludeScope>system</excludeScope>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+				<inherited>true</inherited>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.patrodyne.etl.TransformIO</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>${libdir}/</classpathPrefix>
+						</manifest>
+						<manifestEntries>
+							<Created-By>Patrodyne</Created-By>
+							<Built-By>Patrodyne</Built-By>
+							<url>http://patrodyne.org</url>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>release-sub-module</id>
+						<goals>
+							<goal>perform</goal>
+						</goals>
+						<configuration>
+							<pomFileName>TransformIO/pom.xml</pomFileName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.izpack</groupId>
+				<artifactId>izpack-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>izpack</goal>
+						</goals>
+						<configuration>
+							<attach>true</attach>
+							<descriptor>${izpack.source}/install.xml</descriptor>
+							<descriptorEncoding>UTF-8</descriptorEncoding>
+							<izpackBasedir>${izpack.target}</izpackBasedir>
+							<kind>${izpack.suffix}</kind>
+							<installerFile>${target}/${project.build.finalName}-${izpack.suffix}.jar</installerFile>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+				<!-- Note: Keystore properties are from ~/.m2/settings.xml -->
+				<configuration>
+					<verbose>false</verbose>
+					<alias>patrodyne</alias>
+					<storepass>${keystore.password}</storepass>
+					<keypass>${keystore.password}</keypass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

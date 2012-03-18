@@ -1,0 +1,39 @@
+Transform Input into Output
+
+	<TransformIO>, or TIO for short, is an extract, transform and load tool with
+	three modes of execution:
+	
+	[[1]] Desktop Graphic User Interface (GUI).
+
+	[[2]] Terminal Text User Interface (TUI).
+
+	[[3]] Command Line Interface (CLI).
+
+	[]
+
+	TIO uses a batch file, expressed in XML, to configure:
+	
+	[[1]] The record format of the source stream (extract).
+
+	[[2]] An optional transformation using your choice of scripting language:
+	
+		[[a]] Bean Shell
+		
+		[[b]] Groovy
+
+		[[c]] Java
+		
+		[[d]] JavaScript
+		
+		[[e]] Jython
+		
+		[[f]] Other JSR 223 compliant scripting engines.
+
+	[[3]] The record format of the target stream (load).
+	
+	[]
+	
+* {Status}
+
+	There is no executable. TIO is a work in progress. 
+	

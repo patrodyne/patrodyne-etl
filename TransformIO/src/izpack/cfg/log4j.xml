@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!-- 
+	A configuration element consists of optional renderer
+	elements, appender elements, categories and an optional root
+	element. See http://logging.apache.org/log4j/1.2/manual.html.
+	HINT: Add this JVM definition to specify the localtion of this file.
+	      -Dlog4j.configuration="file://path/log4j.xml" (absolute)
+	      -Dlog4j.configuration="file:path/log4j.xml"   (relative)
+-->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<!-- 
+		Appenders define the output destination and must have a name and a 
+		implementation class. Appenders may contain an error handler, 
+		a layout, optional parameters and filters. 
+		See http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html.
+	-->
+
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="TRACE"/>
+		<param name="Follow" value="true"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%p] %m%n"/>
+		</layout>
+	</appender>
+
+	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="log/TransformIO.log" />
+		<param name="Append" value="true" />				
+		<param name="Threshold" value="TRACE"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<!-- Tabbed Pattern: Date Priority [Category] (Thread) Message\n 
+			<param name="ConversionPattern" value="%d\t%p\t(%t)\t[%c]\t%m%n"/>
+			-->
+			<!-- Tabbed Pattern: Date Priority [Category] Message\n -->
+			<param name="ConversionPattern" value="%d\t%p\t[%c]\t%m%n"/>
+		</layout>			
+	</appender>
+
+	<!-- http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp -->
+	<appender name="CHAINSAW" class="org.apache.log4j.net.SocketAppender">
+		<param name="RemoteHost" value="localhost"/>
+		<param name="Port" value="4560"/>
+		<param name="locationInfo" value="false"/>
+		<param name="Threshold" value="INFO"/>
+	</appender>
+
+	<!-- 
+		Category names are defined by the developer. Usually package names are used
+		as category names. Categories control logging verbosity. The developer
+		instruments code using log methods such as 'log.error(message)',
+		'log.debug(message)', etc. Here 'debug' and 'error' are examples of
+		priority values. The verbosity increases according the the priority value:
+			FATAL: The process cannot function.
+			ERROR: The process can function but a job cannot be completed.
+			WARN:  The job can be completed but after a recoverable exception.
+			INFO:  Life-cycle information to confirm normal process or job status.
+			DEBUG: Additional information to explain process or job status.
+			TRACE: Method level status for detailed analysis. Highly verbose.
+		Note: Verbosity depends on process instrumentation. The developer
+					should limit the use of log levels from FATAL to DEBUG to
+					ensure logs do not overwhelm the reader. The developer 
+					is free to write TRACE log events without limitation.
+					Generally:
+						Operators are the reader for FATAL/ERROR messages.
+						Administrators are the readers for WARN/INFO/DEBUG messages
+						Troubleshooters are the readers for TRACE messages.
+						Developers are readers of all messages depending on the
+						development life cycle.
+	-->
+
+	<category name="java">		<priority value="INFO"/>	</category>
+	<category name="javax">		<priority value="INFO"/>	</category>
+	<category name="com">		<priority value="INFO"/>	</category>
+	<category name="edu">		<priority value="INFO"/>	</category>
+	<category name="net">		<priority value="INFO"/>	</category>
+	<category name="org">		<priority value="INFO"/>	</category>
+
+	<!-- 
+		Root declares the default priority value and the active appenders.	
+		<appender-ref ref="CHAINSAW"/>
+		<appender-ref ref="CONSOLE"/>
+	-->
+	<root>
+		<priority value="TRACE"/>
+		<appender-ref ref="FILE"/>
+	</root>
+
+</log4j:configuration>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

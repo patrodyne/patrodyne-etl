@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- IzPack shortcuts, Windows -->
+<shortcuts>
+	<skipIfNotSupported/>
+	<programGroup defaultName="Patrodyne\${APP_NAME}" location="applications"/>
+	<defaultCurrentUser/>
+	<shortcut 
+		name="${APP_NAME}"
+		description="Launch ${APP_NAME}"
+		target="java"
+		commandLine="-D${JVM_CFG_LOG} -Djava.ext.dirs=${EXT_DIR} -jar &quot;${INSTALL_PATH}/${FINAL_NAME}.jar&quot;"
+		workingDirectory="${INSTALL_PATH}"
+		iconFile="${INSTALL_PATH}/${ICN_DIR}/${APP_NAME}.ico"
+		iconIndex="0"
+		initialState="noShow"
+
+		desktop="yes"
+		programGroup="yes"
+		applications="no"
+		startMenu="no"
+		startup="no"
+	>
+		<createForPack name="Core"/>
+	</shortcut>
+
+	<shortcut
+		name="Uninstall ${APP_NAME}"
+		description="Launch uninstaller"
+		target="java"
+		commandLine="-jar &quot;${INSTALL_PATH}/Uninstaller/uninstaller.jar&quot;"
+		workingDirectory="${INSTALL_PATH}"
+		iconFile="${INSTALL_PATH}/${ICN_DIR}/uninstaller.ico"
+		iconIndex="0"
+		initialState="noShow"
+
+		desktop="no"
+		programGroup="yes"
+		applications="no"
+		startMenu="no"
+		startup="no"
+	>
+		<createForPack name="Core" />
+	</shortcut>
+
+</shortcuts>
