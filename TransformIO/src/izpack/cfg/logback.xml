@@ -3,13 +3,22 @@
 <configuration>
 
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>TRACE</level>
+		</filter>
+
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>%d{HH:mm:ss.SSS} %-5level %logger - %msg%n</Pattern>
+			<Pattern>%-5level %msg%n</Pattern>
 		</encoder>
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>log/TransformIO.log</file>
+		<append>true</append>
+
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
 
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]\t%-5level %logger\t%msg%n</Pattern>
@@ -26,17 +35,21 @@
 		</triggeringPolicy>
 	</appender>
 
+	<logger name="charva"	level="INFO"/>
+	<logger name="charvax"	level="INFO"/>
 	<logger name="java"		level="INFO"/>
 	<logger name="javax"	level="INFO"/>
 	<logger name="com"		level="INFO"/>
 	<logger name="edu"		level="INFO"/>
 	<logger name="net"		level="INFO"/>
 	<logger name="org"		level="INFO"/>
+	<logger name="sun"		level="INFO"/>
 
-	<!--
+	<logger name="org.patrodyne.etl.transformio"		level="TRACE"/>
+	<logger name="org.patrodyne.etl.transformio.cli"	level="DEBUG"/>
+
+	<root level="TRACE">
 		<appender-ref ref="CONSOLE"/>
-	-->
-	<root level="INFO">
 		<appender-ref ref="FILE"/>
 	</root>
 </configuration>

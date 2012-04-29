@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings 
+	version="2.1"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ./bindingschema_2_0.xsd"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	xmlns:anx="http://annox.dev.java.net"
+	jxb:extensionBindingPrefixes="anx"
+>
+	<jxb:globalBindings>
+    	<xjc:simple/>
+  	</jxb:globalBindings>
+
+	<jxb:bindings schemaLocation="TransformIO.xsd" node="/xs:schema">
+		<jxb:bindings node="xs:complexType[@name='batchType']">
+			<anx:annotate>
+				<anx:annotate anx:class="javax.xml.bind.annotation.XmlRootElement" name="batch" />
+			</anx:annotate>
+		</jxb:bindings>
+	</jxb:bindings>
+</jxb:bindings>

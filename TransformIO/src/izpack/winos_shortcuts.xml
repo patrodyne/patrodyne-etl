@@ -8,7 +8,7 @@
 		name="${APP_NAME}"
 		description="Launch ${APP_NAME}"
 		target="java"
-		commandLine="-D${JVM_CFG_LOG} -Djava.ext.dirs=${EXT_DIR} -jar &quot;${INSTALL_PATH}/${FINAL_NAME}.jar&quot;"
+		commandLine="-D${JVM_CFG_LOG} -Djava.ext.dirs=${EXT_DIR} -jar &quot;${INSTALL_PATH}/${FINAL_NAME}.jar&quot; mode=GUI"
 		workingDirectory="${INSTALL_PATH}"
 		iconFile="${INSTALL_PATH}/${ICN_DIR}/${APP_NAME}.ico"
 		iconIndex="0"

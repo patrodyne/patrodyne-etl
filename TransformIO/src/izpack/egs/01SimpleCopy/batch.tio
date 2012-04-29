@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+	Copy a source file to a target file without changes.
+	Each source record is extracted as a single field,
+	transformed to an identical target field,
+	and loaded to a record in the target file.
+-->
+<batch xmlns="http://patrodyne.org/etl/TransformIO">
+
+	<source charset="UTF-8">
+		<locator url="file:egs/01SimpleCopy/input.txt"/>
+		<record>
+			<field name="F01" get="(.*)\n" set="$1"/>
+		</record>
+	</source>
+
+	<target charset="UTF-8">
+		<locator url="file:egs/01SimpleCopy/output.txt"/>
+		<record>
+			<field name="F01" get="(.*)" set="$1\n"/>
+		</record>
+	</target>
+
+	<transform>
+		<script engine="JavaScript">
+main();
+function main()
+{
+	target.put('F01',source.get('F01'));
+	return target;
+}
+		</script>
+	</transform>
+
+</batch>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

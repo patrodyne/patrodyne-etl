@@ -27,7 +27,7 @@
 	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="File" value="log/TransformIO.log" />
 		<param name="Append" value="true" />				
-		<param name="Threshold" value="TRACE"/>
+		<param name="Threshold" value="DEBUG"/>
 		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
 		<layout class="org.apache.log4j.PatternLayout">
 			<!-- Tabbed Pattern: Date Priority [Category] (Thread) Message\n 
@@ -70,20 +70,26 @@
 						development life cycle.
 	-->
 
+	<category name="charva">	<priority value="INFO"/>	</category>
+	<category name="charvax">	<priority value="INFO"/>	</category>
 	<category name="java">		<priority value="INFO"/>	</category>
 	<category name="javax">		<priority value="INFO"/>	</category>
 	<category name="com">		<priority value="INFO"/>	</category>
 	<category name="edu">		<priority value="INFO"/>	</category>
 	<category name="net">		<priority value="INFO"/>	</category>
 	<category name="org">		<priority value="INFO"/>	</category>
+	<category name="sun">		<priority value="INFO"/>	</category>
+
+	<category name="org.patrodyne.etl">		<priority value="TRACE"/>	</category>
+	<category name="org.patrodyne.etl.cli">	<priority value="DEBUG"/>	</category>
 
 	<!-- 
 		Root declares the default priority value and the active appenders.	
 		<appender-ref ref="CHAINSAW"/>
-		<appender-ref ref="CONSOLE"/>
 	-->
 	<root>
 		<priority value="TRACE"/>
+		<appender-ref ref="CONSOLE"/>
 		<appender-ref ref="FILE"/>
 	</root>
 

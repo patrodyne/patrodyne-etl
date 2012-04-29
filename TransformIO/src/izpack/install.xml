@@ -14,10 +14,12 @@
 
 	<variables>
 		<variable name="CFG_DIR" value="${cfgdir}"/>
+		<variable name="EGS_DIR" value="${egsdir}"/>
 		<variable name="EXT_DIR" value="${extdir}"/>
 		<variable name="ICN_DIR" value="${icndir}"/>
 		<variable name="LIB_DIR" value="${libdir}"/>
 		<variable name="LOG_DIR" value="${logdir}"/>
+		<variable name="NAT_DIR" value="${natdir}"/>
 		<variable name="SUB_DIR" value="Patrodyne/${project.artifactId}/${project.version}"/>
 		<variable name="FINAL_NAME" value="${project.build.finalName}"/>
 	</variables>
@@ -86,6 +88,9 @@
 			<description>Core installation files</description>
 			<file src="README.html" targetdir="${INSTALL_PATH}"/>
 			<file src="../${FINAL_NAME}.jar" targetdir="${INSTALL_PATH}"/>
+			<fileset dir="${egsdir}" targetdir="${INSTALL_PATH}/${egsdir}" casesensitive="yes">
+				<include name="**"/>
+			</fileset>
 			<fileset dir="${libdir}" targetdir="${INSTALL_PATH}/${libdir}" casesensitive="yes">
 				<include name="**"/>
 			</fileset>
@@ -96,6 +101,9 @@
 			<file src="bin/${project.name}" targetdir="${INSTALL_PATH}" os="unix"/>
 			<parsable targetfile="${INSTALL_PATH}/${project.name}" type="shell" os="unix"/>
 			<executable targetfile="${INSTALL_PATH}/${project.name}" stage="never" keep="true" os="unix"/>
+			<file src="bin/${project.name}.sh" targetdir="${INSTALL_PATH}" os="unix"/>
+			<parsable targetfile="${INSTALL_PATH}/${project.name}.sh" type="shell" os="unix"/>
+			<executable targetfile="${INSTALL_PATH}/${project.name}.sh" stage="never" keep="true" os="unix"/>
 			<file src="bin/Uninstall" targetdir="${INSTALL_PATH}" os="unix"/>
 			<parsable targetfile="${INSTALL_PATH}/Uninstall" type="shell" os="unix"/>
 			<executable targetfile="${INSTALL_PATH}/Uninstall" stage="never" keep="true" os="unix"/>
@@ -109,6 +117,7 @@
 		<pack name="Logger" required="yes">
 			<description>Select one logging framework. HINT: Uncheck one to select another.</description>
 			<file src="packs/logger/slf4j-api-${slf4j.version}.jar" targetdir="${INSTALL_PATH}/${extdir}"/>
+			<file src="packs/logger/jcl-over-slf4j-${slf4j.version}.jar" targetdir="${INSTALL_PATH}/${extdir}"/>
 			<fileset dir="${logdir}" targetdir="${INSTALL_PATH}/${logdir}" casesensitive="yes">
 				<include name="**"/>
 			</fileset>

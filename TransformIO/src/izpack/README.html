@@ -4,9 +4,31 @@
 		<title>TransformIO</title>
 	</head>
 	<body>
-		<h1>Transform Input into Output</h1>
+		<h1>TransformIO</h1>
+		<h2>Transform Input into Output</h2>
 
-		<p>To be determined...</p>
+        <p><i>TransformIO</i>, or TIO for short, is an extract, transform and load tool with three modes of execution:</p>
+		<ol>
+			<li>Desktop Graphic User Interface (GUI).</li>
+			<li>Terminal Text User Interface (TUI).</li>
+			<li>Command Line Interface (CLI).</li>
+		</ol>
+		
+		<p>TIO uses a batch file, expressed in XML, to configure:</p>
+		<ol>
+			<li>The record format of the source stream (extract).</li>
+			<li>An optional transformation using your choice of scripting language:
+				<ol>
+					<li><b>Bean Shell</b> - Executes Java syntax and extends it with common scripting conveniences.</li>
+					<li><b>Groovy</b> - Builds upon the strengths of Java but has additional power features inspired by Python, Ruby and Smalltalk.</li>
+					<li><b>Java</b> - Compiles a Java source then invokes its main method.</li>
+					<li><b>JavaScript</b> - A multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.</li>
+					<li><b>Jython</b> - A Java implementation of Python. It is a general-purpose, high-level programming language with code readability.</li>
+					<li><b>Other JSR 223 compliant scripting engines.</li>
+				</ol>
+			</li>
+			<li>The record format of the target stream (load).</li>
+		</ol>
 		
 		<p><a href="http://patrodyne.org/sites/etl-TransformIO/index.html">More...</a></p>
 	</body>

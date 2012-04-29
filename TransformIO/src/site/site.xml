@@ -49,6 +49,11 @@
 			<item name="FAQ" href="faq.html"/>
 		</menu>
 
+		<menu name="Java">
+			<item name="Test" href="http://java.com/en/download/testjava.jsp"/>
+			<item name="Verify" href="http://java.com/en/download/installed.jsp"/>
+		</menu>
+		
 		<menu name="Download">
 <!-- 
 			<item name="Install" href="install.jnlp"/>
@@ -57,6 +62,7 @@
 			<item name="Tarball" href="https://github.com/patrodyne/patrodyne-etl/tarball/master"/>
 			<item name="Zipball" href="https://github.com/patrodyne/patrodyne-etl/zipball/master"/>
 		</menu>
+		
 		<menu ref="reports"/>
 
 		<menu name="Powered By"/>

@@ -17,15 +17,15 @@ Transform Input into Output
 
 	[[2]] An optional transformation using your choice of scripting language:
 	
-		[[a]] Bean Shell
-		
-		[[b]] Groovy
+		[[a]] <<Bean Shell>> - Executes Java syntax and extends it with common scripting conveniences.
+    
+		[[b]] <<Groovy>> - Builds upon the strengths of Java but has additional power features inspired by Python, Ruby and Smalltalk.
 
-		[[c]] Java
-		
-		[[d]] JavaScript
-		
-		[[e]] Jython
+		[[c]] <<Java>> - Compiles a Java source then invokes its main method.
+
+		[[d]] <<JavaScript>> - A multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.
+
+		[[e]] <<Jython>> - A Java implementation of Python. It is a general-purpose, high-level programming language with code readability.
 		
 		[[f]] Other JSR 223 compliant scripting engines.
 
@@ -36,4 +36,3 @@ Transform Input into Output
 * {Status}
 
 	There is no executable. TIO is a work in progress. 
-	

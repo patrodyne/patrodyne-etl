@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema 
+	targetNamespace="http://patrodyne.org/etl/TransformIO" 
+	elementFormDefault="qualified"
+	xmlns="http://www.w3.org/2001/XMLSchema" 
+	xmlns:tns="http://patrodyne.org/etl/TransformIO" 
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ./bindingschema_2_0.xsd"
+>
+    <element name="batch" type="tns:batchType"/>
+
+   	<complexType name="batchType">
+		<annotation>
+			<appinfo>
+				<jxb:class name="Batch">
+<jxb:javadoc><![CDATA[
+A batch is a configuration to transform a source stream into a target stream.
+It has properties to specify a data source and data target plus a property
+to include a transformation script. The script can be in any language with
+a JSR 223 compliant scripting engine:
+<ul>
+<li><b>Bean Shell</b> - Executes Java syntax and extends it with common scripting conveniences.</li>
+<li><b>Groovy</b> - Builds upon the strengths of Java but has additional power features inspired by Python, Ruby and Smalltalk.</li>
+<li><b>Java</b> - Compiles a Java source then invokes its main method.</li>
+<li><b>JavaScript</b> - A multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.</li>
+<li><b>Jython</b> - A Java implementation of Python. It is a general-purpose, high-level programming language with code readability.</li>
+</ul>
+The Batch class is instrumented with Java XML Binding (JAXB) annotations.
+TransformIO binds the Batch configuration to XML files, normally identified by
+their <code>*.tio</code> suffix. When a user creates a batch configuration in
+TransformIO and saves it, the batch is marshalled by JAXB and output to a TIO
+file. When TransformIO opens a file it is unmarshalled by JAXB into a Batch
+object graph for runtime processing.
+]]></jxb:javadoc>
+				</jxb:class>
+			</appinfo>
+		</annotation>
+   		<sequence>
+   			<element name="source" maxOccurs="1" minOccurs="1">
+   				<complexType>
+					<annotation>
+						<appinfo>
+							<jxb:class name="Source">
+<jxb:javadoc><![CDATA[
+<p>A source identifies the location, encoding and record layout of an input steam.</p>
+
+<p>The location is a Uniform Resource Locator (URL); thus, the input stream can be
+a local file (<code>file://</code>), a remote file (<code>ftp://</code>), a page 
+(<code>http://</code>) or any stream for which there is a protocol handler available.</p>
+
+<p>The encoding specifies how the byte stream is convert into characters. Common
+examples are <code>UTF-8</code>, <code>Cp1252</code> or <code>ASCII</code>.</p>
+
+<p>The record layout specifies how the input stream is parsed into records and 
+fields.</p>
+]]></jxb:javadoc>
+							</jxb:class>
+						</appinfo>
+					</annotation>
+   					<sequence>
+   						<element name="locator"
+   							type="tns:locatorType" maxOccurs="1" minOccurs="1">
+   						</element>
+   						<element name="record" type="tns:recordType"
+   							maxOccurs="1" minOccurs="1">
+   						</element>
+   					</sequence>
+   					<attribute name="charset" type="string"
+   						use="optional">
+   					</attribute>
+   				</complexType>
+   			</element>
+   			<element name="target" maxOccurs="1" minOccurs="1">
+   				<complexType>
+   					<annotation>
+   						<appinfo>
+   							<jxb:class name="Target">
+   								<jxb:javadoc><![CDATA[
+<p>A target identifies the location, encoding and record layout of an output steam.</p>
+
+<p>The location is a Uniform Resource Locator (URL); thus, the output stream can be
+a local file (<code>file://</code>), a remote file (<code>ftp://</code>) or any 
+stream for which there is a protocol handler available.</p>
+
+<p>The encoding specifies how the characters are converted into bytes. Common
+examples are <code>UTF-8</code>, <code>Cp1252</code> or <code>ASCII</code>.</p>
+
+<p>The record layout specifies how the output stream is formatted into records and 
+fields.</p>
+]]></jxb:javadoc>
+   							</jxb:class>
+   						</appinfo>
+   					</annotation>
+   					<sequence>
+   						<element name="locator"
+   							type="tns:locatorType" maxOccurs="1" minOccurs="1">
+   						</element>
+   						<element name="record" type="tns:recordType"
+   							maxOccurs="1" minOccurs="1">
+   						</element>
+   					</sequence>
+   					<attribute name="charset" type="string"
+   						use="optional">
+   					</attribute>
+   					<attribute name="byteOrderMark" type="boolean" default="false"></attribute>
+   				</complexType>
+   			</element>
+   			<element name="transform" maxOccurs="1" minOccurs="0">
+   				<complexType>
+					<annotation>
+						<appinfo>
+							<jxb:class name="Transform">
+<jxb:javadoc><![CDATA[
+A transform processes source fields into target fields. It can be a declared
+as a Java Scripting Engine (JSR-223). 
+]]></jxb:javadoc>
+							</jxb:class>
+						</appinfo>
+					</annotation>
+
+   					<choice>
+   						<element name="script">
+   							<complexType>
+								<annotation>
+									<appinfo>
+										<jxb:class name="Script">
+<jxb:javadoc><![CDATA[
+<p>Scripting for the Java Platform (JSR 223) is a framework for embedding scripts into Java source code.</p> 
+
+<p>Several engines are available for languages such as:</p>
+
+<ul>
+    <li><b>Bean Shell</b> - Executes Java syntax and extends it with common scripting conveniences.</li>
+    <li><b>Groovy</b> - Builds upon the strengths of Java but has additional power features inspired by Python, Ruby and Smalltalk.</li>
+    <li><b>Java</b> - Compiles a Java source then invokes its main method.</li>
+    <li><b>JavaScript</b> - A multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.</li>
+    <li><b>Jython</b> - A Java implementation of Python. It is a general-purpose, high-level programming language with code readability.</li>
+</ul>
+]]></jxb:javadoc>
+										</jxb:class>
+									</appinfo>
+								</annotation>
+   								<simpleContent>
+   									<extension base="string">
+   										<attribute name="engine"
+   											type="string" use="optional" default="JavaScript">
+   										</attribute>
+   									</extension>
+   								</simpleContent>
+   							</complexType>
+   						</element>
+   					</choice>
+   				</complexType></element>
+   		</sequence>
+   	</complexType>
+
+    <complexType name="recordType">
+		<annotation>
+			<appinfo>
+				<jxb:class name="Record">
+<jxb:javadoc><![CDATA[
+<p>A record is data divided into fields, in fixed number and sequence and identified by name.
+Each field is given a name, a <em>get</em> regular expression and a <em>set</em> replacement 
+string. A <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expression</a>
+or regex provides a concise and flexible means to <em>match</em> (parse) sub-strings of text. 
+With the two expressions, fields can be parsed and formatted at the same time. For example, 
+given a record set of telephone numbers, the fields can be parsed and the phone number can be
+formatted to remove the dashes.</p>
+
+<p><b><code>Data</code></b></p>
+
+<pre>
+Mary Smith|123-456-7890
+John Brown|098-765-4321
+</pre>
+
+<p><b><code>Source</code></b></p>
+
+<pre>
+&lt;record&gt;
+    &lt;field name="Name" get="(.*)\|" set="$1"/&gt;
+    &lt;field name="Phone" get="(...)-(...)-(....)\n" set="$1$2$3"/&gt;
+&lt;/record&gt;
+</pre>
+
+<p>The <code>Name</code> field gets and groups all characters before the first pipe
+<code>'|'</code>. Then, it sets the <code>Name</code> to be the first group without the pipe.</p>
+
+<p>The <code>Phone</code> field gets the three groups of data, found in between the dashes,
+and prior to the end-of-line character. Then, it sets the <code>Phone</code> field to be all
+the groups as one compressed value, and omits the EOL.</p>
+
+<p>This is a typical example of extracting data from a source stream. Once the fields are
+assigned they become available for transformation or inclusion in the target for loading.
+The target record can change the field order or fields can be omitted. For example:</p>
+
+<p><b><code>Target</code></b></p>
+
+<pre>
+&lt;record&gt;
+    &lt;field name="Phone" get="(.*)" set="$1|"/&gt;
+    &lt;field name="Name" get="(.*)" set="$1\n"/&gt;
+&lt;/record&gt;
+</pre>
+
+<p>In this target, the field order has flipped. Both fields get all the data from
+their assigned values. The <code>Phone</code> field appends a pipe to delimit it
+from the next field and the <code>Name</code> field appends a new-line character to
+end the record.</p>
+]]></jxb:javadoc>
+				</jxb:class>
+			</appinfo>
+		</annotation>
+    	<sequence>
+    		<element name="field" maxOccurs="unbounded" minOccurs="1">
+    			<complexType>
+					<annotation>
+						<appinfo>
+							<jxb:class name="Field">
+<jxb:javadoc><![CDATA[
+<p>A field represents a single value within a record. It has a name, a get 
+expression and a set expression. The get expression is a 
+<a href="http://en.wikipedia.org/wiki/Regular_expression">regular expression</a> 
+or regex. The set expression is a replacement string. The replacement string
+may contain references to captured groups (subsequences) from the get pattern.</p>
+
+<p>Note: Field data is treated as text. There is no type conversion
+because conversion is prone to errors. For example, converting a field to 
+an integer when the field contains the letter <tt>O</tt>  instead of 
+the intended number <tt>0</tt> is an error that needs to be trapped
+and handled. We prefer to keep field parsing and type conversion as two
+separate concerns. When type conversion is needed, it can be handled in
+the transformation script where error handling can be better implemented.</p>
+]]></jxb:javadoc>
+							</jxb:class>
+						</appinfo>
+					</annotation>
+    				<attribute name="name" type="string" use="required"></attribute>
+    				<attribute name="get" type="string" use="required"></attribute>
+    				<attribute name="set" type="string" use="required"></attribute>
+    			</complexType>
+    		</element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="locatorType">
+		<annotation>
+			<appinfo>
+				<jxb:class name="Locator">
+<jxb:javadoc><![CDATA[
+<p>A locator type represents a Uniform Resource Locator.
+It can be specified as a single attribute or in parts:</p>
+<ul>
+<li><b>protocol</b> - Communication standard.</li>
+<li><b>username</b> - Authentication account.</li>
+<li><b>password</b> - Authentication credential.</li>
+<li><b>host</b> - Server address name.</li>
+<li><b>port</b> - Channel number.</li>
+<li><b>path</b> - Resource location.</li>
+<li><b>query</b> - Criteria parameters.</li>
+<li><b>anchor</b> - Resource offset.</li>
+</ul>
+<p>To specify the locator as a single value use the <tt>url</tt> attribute.</p>
+]]></jxb:javadoc>
+				</jxb:class>
+			</appinfo>
+		</annotation>
+    	<sequence>
+    		<element name="protocol" type="string" maxOccurs="1" minOccurs="0">
+    		</element>
+    		<element name="username" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="password" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="host" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="port" type="nonNegativeInteger" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="path" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="query" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="anchor" type="string" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="url" type="anyURI" use="optional"></attribute>
+    </complexType>
+</schema>
