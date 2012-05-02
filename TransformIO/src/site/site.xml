@@ -21,8 +21,8 @@
 	<bannerRight>
 		<name>FlattrCounterCompact</name>
 		<src>http://api.flattr.com/button/flattr-badge-large.png</src>
-		<href>http://flattr.com/thing/446287/Patrodyne</href>
-		<alt>http://patrodyne.org/</alt>
+		<href>http://flattr.com/thing/657653/TransformIO</href>
+		<alt>http://patrodyne.org/sites/etl-TransformIO</alt>
 	</bannerRight>
 
 	<poweredBy>
@@ -55,8 +55,8 @@
 		</menu>
 		
 		<menu name="Download">
+			<item name="Pre-release" href="install.jnlp"/>
 <!-- 
-			<item name="Install" href="install.jnlp"/>
 			<item name="Artifacts" href="http://search.maven.org/#search|ga|1|a%3A%22patrodyne-etl-TransformIO%22"/>
 -->
 			<item name="Tarball" href="https://github.com/patrodyne/patrodyne-etl/tarball/master"/>
