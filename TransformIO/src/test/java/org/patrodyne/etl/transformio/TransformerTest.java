@@ -25,7 +25,7 @@ public class TransformerTest
 	protected static final String NEW_BATCH =
 		"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"+
 		"<batch xmlns=\"http://patrodyne.org/etl/TransformIO\">\n"+
-		"\t<source charset=\"UTF-8\">\n"+
+		"\t<source charset=\"UTF-8\" bufferSize=\"256\">\n"+
 		"\t\t<locator url=\"file:input.txt\"/>\n"+
 		"\t\t<record>\n"+
 		"\t\t\t<field name=\"F01\" get=\"(.*)\\n\" set=\"$1\"/>\n"+

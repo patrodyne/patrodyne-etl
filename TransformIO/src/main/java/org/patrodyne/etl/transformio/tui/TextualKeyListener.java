@@ -19,7 +19,7 @@ import charvax.swing.JTextArea;
 public class TextualKeyListener
 	implements KeyListener
 {
-	private static final int CTRL_C=3, CTRL_K=11, CTRL_V=22, CTRL_X=24;
+	private static final int CTRL_A=1, CTRL_C=3, CTRL_V=22, CTRL_X=24;
 
 	private JTextArea textArea;
 	
@@ -87,7 +87,7 @@ public class TextualKeyListener
 		{
 			switch ( keyEvent.getKeyCode() )
 			{
-				case CTRL_K: mark(); break;
+				case CTRL_A: mark(); break;
 				case CTRL_X: cut();	break;
 				case CTRL_C: copy(); break;
 				case CTRL_V: paste(); break;

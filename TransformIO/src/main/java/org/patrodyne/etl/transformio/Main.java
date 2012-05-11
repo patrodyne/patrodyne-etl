@@ -72,7 +72,14 @@ public class Main
 				if ( nvp.length == 2 )
 					options.put(nvp[0].toLowerCase(), nvp[1]);
 				else if ( nvp.length == 1 )
-					options.put(nvp[0].toLowerCase(), "");
+				{
+					// A single value option is either 'help' 
+					// or presumably a batch name.
+					if ( nvp[0].toLowerCase().equalsIgnoreCase("help"))
+						options.put(nvp[0].toLowerCase(), "");
+					else
+						options.put("batch", nvp[0]);
+				}
 				else
 					throw new IllegalArgumentException("invalid option at position "+(i+1)+": "+args[i]);
 			}

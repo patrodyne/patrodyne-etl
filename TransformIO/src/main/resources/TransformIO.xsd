@@ -39,10 +39,10 @@ object graph for runtime processing.
    		<sequence>
    			<element name="source" maxOccurs="1" minOccurs="1">
    				<complexType>
-					<annotation>
-						<appinfo>
-							<jxb:class name="Source">
-<jxb:javadoc><![CDATA[
+   					<annotation>
+   						<appinfo>
+   							<jxb:class name="Source">
+   								<jxb:javadoc><![CDATA[
 <p>A source identifies the location, encoding and record layout of an input steam.</p>
 
 <p>The location is a Uniform Resource Locator (URL); thus, the input stream can be
@@ -55,9 +55,9 @@ examples are <code>UTF-8</code>, <code>Cp1252</code> or <code>ASCII</code>.</p>
 <p>The record layout specifies how the input stream is parsed into records and 
 fields.</p>
 ]]></jxb:javadoc>
-							</jxb:class>
-						</appinfo>
-					</annotation>
+   							</jxb:class>
+   						</appinfo>
+   					</annotation>
    					<sequence>
    						<element name="locator"
    							type="tns:locatorType" maxOccurs="1" minOccurs="1">
@@ -69,6 +69,7 @@ fields.</p>
    					<attribute name="charset" type="string"
    						use="optional">
    					</attribute>
+   					<attribute name="bufferSize" type="positiveInteger" use="optional" default="256"></attribute>
    				</complexType>
    			</element>
    			<element name="target" maxOccurs="1" minOccurs="1">

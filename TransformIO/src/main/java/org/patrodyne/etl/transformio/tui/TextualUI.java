@@ -38,6 +38,7 @@ public class TextualUI extends Transformer implements Runnable
 	private static final CharSequence EXPAND_TAB = "    ";
 	private static TextualClipboard clipboard = new TextualClipboard();
 	private static JFrame frame;
+	private static final int CTRL_B=2, CTRL_E=5, CTRL_G=7, CTRL_K=11, CTRL_S=19, CTRL_R=18;
 	
 	private static transient Logger log = LoggerFactory.getLogger(TextualUI.class);
 	
@@ -327,7 +328,7 @@ public class TextualUI extends Transformer implements Runnable
 		JMenuItem mntmClose = new JMenuItem("Close", 'C');
 		mnFile.add(mntmClose);
 		
-		JMenuItem mntmSave = new JMenuItem("Save", 'S');
+		JMenuItem mntmSave = new JMenuItem("Save (^S)", 'S');
 		mnFile.add(mntmSave);
 		
 		JMenuItem mntmSaveAs = new JMenuItem("Save As...", 'A');
@@ -339,7 +340,7 @@ public class TextualUI extends Transformer implements Runnable
 		JMenu mnEdit = new JMenu("Edit", 'E');
 		menuBar.add(mnEdit);
 		
-		JMenuItem mntmMark = new JMenuItem("Mark (^K)", 'k');
+		JMenuItem mntmMark = new JMenuItem("Mark (^A)", 'M');
 		mnEdit.add(mntmMark);
 		
 		mnEdit.addSeparator();
@@ -361,10 +362,10 @@ public class TextualUI extends Transformer implements Runnable
 		JMenu mnTransform = new JMenu("Transform", 'T');
 		menuBar.add(mnTransform);
 		
-		JMenuItem mntmDebug = new JMenuItem("Debug", 'D');
+		JMenuItem mntmDebug = new JMenuItem("Debug (^G)", 'D');
 		mnTransform.add(mntmDebug);
 		
-		JMenuItem mntmRun = new JMenuItem("Run", 'R');
+		JMenuItem mntmRun = new JMenuItem("Run (^R)", 'R');
 		mnTransform.add(mntmRun);
 		
 		final JMenu mnSource = new JMenu("Source", 'S');
@@ -392,7 +393,7 @@ public class TextualUI extends Transformer implements Runnable
 		chckbxmntmWrapTarget.setSelected(getPreferredInitialWrapTargetData());
 		mnTarget.add(chckbxmntmWrapTarget);
 		
-		JMenuItem mntmBlankTarget = new JMenuItem("Blank", 'B');
+		JMenuItem mntmBlankTarget = new JMenuItem("Blank (^B)", 'B');
 		mnTarget.add(mntmBlankTarget);
 		
 		JMenu mnConsole = new JMenu("Console", 'C');
@@ -402,68 +403,95 @@ public class TextualUI extends Transformer implements Runnable
 		chckbxmntmWrapConsole.setSelected(getPreferredInitialWrapConsoleData());
 		mnConsole.add(chckbxmntmWrapConsole);
 		
-		JMenuItem mntmBlankConsole = new JMenuItem("Blank", 'B');
+		JMenuItem mntmBlankConsole = new JMenuItem("Blank (^K)", 'B');
 		mnConsole.add(mntmBlankConsole);
 		
-		JMenuItem mntmListEngines = new JMenuItem("Engines", 'E');
+		JMenuItem mntmListEngines = new JMenuItem("Engines (^E)", 'E');
 		mnConsole.add(mntmListEngines);
 		
 		JMenu mnHelp = new JMenu("Help", 'H');
 		menuBar.add(mnHelp);
 		
-		JMenuItem mntmOnline = new JMenuItem("Online");
+		JMenuItem mntmOnline = new JMenuItem("Online", 'O');
 		mnHelp.add(mntmOnline);
 		
-		JMenuItem mntmDonate = new JMenuItem("Donate");
+		JMenuItem mntmDonate = new JMenuItem("Donate", 'D');
 		mnHelp.add(mntmDonate);
 		
-		JMenuItem mntmAbout = new JMenuItem("About");
+		JMenuItem mntmKeys = new JMenuItem("Keys", 'K');
+		mnHelp.add(mntmKeys);
+		
+		JMenuItem mntmAbout = new JMenuItem("About", 'A');
 		mnHelp.add(mntmAbout);
+		
+		frame.addKeyListener
+		(
+			new KeyListener()
+			{
+				@Override
+				public void keyTyped(KeyEvent keyEvent)	{ }
+				
+				@Override
+				public void keyReleased(KeyEvent keyEvent) { }
+				
+				@Override
+				public void keyPressed(KeyEvent keyEvent)
+				{
+					switch ( keyEvent.getKeyCode() )
+					{
+						case CTRL_G: debug(batchTextArea, sourceTextArea, targetTextArea); break;
+						case CTRL_R: run(batchTextArea, sourceTextArea, targetTextArea); break;
+						case CTRL_S: saveBatch(batchTextArea); break;
+						case CTRL_B: blankOrNotify(targetTextArea); break;
+						case CTRL_K: blankOrNotify(consoleTextArea); break;
+						case CTRL_E: logScriptEngines(); break;
+						default: break;
+					}
+				}
+			}
+		);
 		
 		tabbedPane.addKeyListener
 		(
 			new KeyListener()
 			{
 				@Override
-				public void keyTyped(KeyEvent ke_)
-				{
-					// Ignored
-				}
+				public void keyTyped(KeyEvent keyEvent) { }
 				
 				@Override
-				public void keyReleased(KeyEvent ke_)
-				{
-					// Ignored
-				}
+				public void keyReleased(KeyEvent keyEvent) {	}
 				
 				@Override
 				public void keyPressed(KeyEvent keyEvent)
 				{
-					int key = keyEvent.getKeyCode();
-					if (key == ' ')
+					if ( keyEvent.getSource() instanceof JButton )
 					{
-						mnFile.setSelected(true);
-						menuBar.setFocus(mnFile);
-					}
-					else if (key == 'b' || key == 'B')
-					{
-						tabbedPane.setSelectedIndex(0);
-						tabbedPane.setFocus(tabbedPane.getComponent(0));
-					}
-					else if (key == 's' || key == 'S')
-					{
-						tabbedPane.setSelectedIndex(1);
-						tabbedPane.setFocus(tabbedPane.getComponent(1));
-					}
-					else if (key == 't' || key == 'T')
-					{
-						tabbedPane.setSelectedIndex(2);
-						tabbedPane.setFocus(tabbedPane.getComponent(2));
-					}
-					else if (key == 'c' || key == 'C')
-					{
-						tabbedPane.setSelectedIndex(3);
-						tabbedPane.setFocus(tabbedPane.getComponent(3));
+						int key = keyEvent.getKeyCode();
+						if (key == ' ')
+						{
+							mnFile.setSelected(true);
+							menuBar.setFocus(mnFile);
+						}
+						else if (key == 'b' || key == 'B')
+						{
+							tabbedPane.setSelectedIndex(0);
+							tabbedPane.setFocus(tabbedPane.getComponent(0));
+						}
+						else if (key == 's' || key == 'S')
+						{
+							tabbedPane.setSelectedIndex(1);
+							tabbedPane.setFocus(tabbedPane.getComponent(1));
+						}
+						else if (key == 't' || key == 'T')
+						{
+							tabbedPane.setSelectedIndex(2);
+							tabbedPane.setFocus(tabbedPane.getComponent(2));
+						}
+						else if (key == 'c' || key == 'C')
+						{
+							tabbedPane.setSelectedIndex(3);
+							tabbedPane.setFocus(tabbedPane.getComponent(3));
+						}
 					}
 				}
 			}
@@ -513,7 +541,7 @@ public class TextualUI extends Transformer implements Runnable
 							{
 								openURL(sourceTextArea, batch.getSource().getLocator());
 								setCurrentSourceHash(sourceTextArea.getText().hashCode());
-								transformBlank(targetTextArea);
+								blank(targetTextArea);
 							}
 						}
 					}
@@ -550,18 +578,7 @@ public class TextualUI extends Transformer implements Runnable
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					try
-					{
-						if (getCurrentBatchFile() != null)
-							save(batchTextArea, getCurrentBatchFile());
-						else
-							setCurrentBatchFile(saveAs(batchTextArea, getCurrentBatchFile()));
-						setCurrentBatchHash(batchTextArea.getText().hashCode());
-					}
-					catch (Exception ex)
-					{
-						notification(ex);
-					}
+					saveBatch(batchTextArea);
 				}
 			}
 		);
@@ -696,14 +713,7 @@ public class TextualUI extends Transformer implements Runnable
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					try
-					{
-						transformDebug(batchTextArea, sourceTextArea, targetTextArea);
-					}
-					catch (Exception ex)
-					{
-						notification(ex);
-					}
+					debug(batchTextArea, sourceTextArea, targetTextArea);
 				}
 			}
 		);
@@ -715,14 +725,7 @@ public class TextualUI extends Transformer implements Runnable
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					try
-					{
-						transformRun(batchTextArea, sourceTextArea, targetTextArea);
-					}
-					catch (Exception ex)
-					{
-						notification(ex);
-					}
+					run(batchTextArea, sourceTextArea, targetTextArea);
 				}
 			}
 		);
@@ -832,14 +835,7 @@ public class TextualUI extends Transformer implements Runnable
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					try
-					{
-						transformBlank(targetTextArea);
-					}
-					catch (Exception ex)
-					{
-						notification(ex);
-					}
+					blankOrNotify(targetTextArea);
 				}
 			}
 		);
@@ -870,14 +866,7 @@ public class TextualUI extends Transformer implements Runnable
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					try
-					{
-						transformBlank(consoleTextArea);
-					}
-					catch (Exception ex)
-					{
-						notification(ex);
-					}
+					blankOrNotify(consoleTextArea);
 				}
 			}
 		);
@@ -932,6 +921,19 @@ public class TextualUI extends Transformer implements Runnable
 			}
 		);
 		
+		mntmKeys.addActionListener
+		(
+			new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					JDialog keysDialog = new QuickKeys(frame);
+					keysDialog.setVisible(true);
+				}
+			}
+		);
+		
 		mntmAbout.addActionListener
 		(
 			new ActionListener()
@@ -974,9 +976,10 @@ public class TextualUI extends Transformer implements Runnable
 		textArea.validate();
 	}
 	
-	private void transformBlank(JTextArea txtrArea)
+	private void blank(JTextArea txtrArea)
 	{
 		txtrArea.setText("");
+		txtrArea.repaint();
 	}
 	
 	private void transformDebug(JTextArea txtrBatch, JTextArea txtrSource, JTextArea txtrTarget)
@@ -985,8 +988,10 @@ public class TextualUI extends Transformer implements Runnable
 		Batch batch = unmarshalBatch(txtrBatch.getText());
 		if ( batch != null )
 		{
-			refreshSource(txtrSource, batch);
+			// Use current edits, source is optional.
+			// refreshSource(txtrSource, batch);
 			txtrTarget.setText(transform(batch, txtrSource.getText()));
+			txtrTarget.repaint();
 		}
 	}
 
@@ -997,7 +1002,7 @@ public class TextualUI extends Transformer implements Runnable
 		if ( batch != null )
 		{
 			refreshSource(txtrSource, batch);
-			transformBlank(txtrTarget);
+			blank(txtrTarget);
 			execute(batch, false);
 			txtrTarget.setText("Target: "+resolve(batch.getTarget().getLocator()));
 		}
@@ -1007,7 +1012,7 @@ public class TextualUI extends Transformer implements Runnable
 		throws IOException
 	{
 		if ( (batch.getSource() == null) || batch.getSource().getLocator() == null )
-			transformBlank(txtrSource);
+			blank(txtrSource);
 		else
 			openURL(txtrSource, batch.getSource().getLocator());
 	}
@@ -1026,7 +1031,10 @@ public class TextualUI extends Transformer implements Runnable
 			if ((file = chooser.getSelectedFile()) != null)
 				save(textArea, file);
 			else
+			{
 				file = currentFile;
+				notification(MessageType.INFO, "Save aborted, no file selected.");
+			}
 		}
 		else
 			notification(MessageType.INFO, "Save canceled by user.");
@@ -1104,6 +1112,8 @@ public class TextualUI extends Transformer implements Runnable
 			close(txtrBatch, txtrSource, txtrTarget, chckbxmntmEdit, mntmSaveSource);
 			confirmClose = true;
 		}
+		if ( confirmClose )
+			setCurrentBatchFile(null);
 		return confirmClose;
 	}
 	
@@ -1145,6 +1155,58 @@ public class TextualUI extends Transformer implements Runnable
 		textArea.setText(read(file));
 		textArea.setCaretPosition(0);
 		//textArea.setTabSize(DEFAULT_TAB_SIZE);
+	}
+
+	private void saveBatch(final JTextArea batchTextArea)
+	{
+		try
+		{
+			if (getCurrentBatchFile() != null)
+				save(batchTextArea, getCurrentBatchFile());
+			else
+				setCurrentBatchFile(saveAs(batchTextArea, getCurrentBatchFile()));
+			setCurrentBatchHash(batchTextArea.getText().hashCode());
+		}
+		catch (Exception ex)
+		{
+			notification(ex);
+		}
+	}
+
+	private void debug(final JTextArea batchTextArea, final JTextArea sourceTextArea, final JTextArea targetTextArea)
+	{
+		try
+		{
+			transformDebug(batchTextArea, sourceTextArea, targetTextArea);
+		}
+		catch (Exception ex)
+		{
+			notification(ex);
+		}
+	}
+
+	private void run(final JTextArea batchTextArea, final JTextArea sourceTextArea, final JTextArea targetTextArea)
+	{
+		try
+		{
+			transformRun(batchTextArea, sourceTextArea, targetTextArea);
+		}
+		catch (Exception ex)
+		{
+			notification(ex);
+		}
+	}
+
+	private void blankOrNotify(final JTextArea targetTextArea)
+	{
+		try
+		{
+			blank(targetTextArea);
+		}
+		catch (Exception ex)
+		{
+			notification(ex);
+		}
 	}
 
 	/**

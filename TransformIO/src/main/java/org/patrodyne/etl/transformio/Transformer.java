@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -60,12 +61,12 @@ import org.patrodyne.etl.transformio.io.ByteOrderMark;
 import org.patrodyne.etl.transformio.io.UnicodeReader;
 import org.patrodyne.etl.transformio.tui.TextualUI;
 import org.patrodyne.etl.transformio.xml.Batch;
-import org.patrodyne.etl.transformio.xml.Locator;
-import org.patrodyne.etl.transformio.xml.Record;
 import org.patrodyne.etl.transformio.xml.Batch.Source;
 import org.patrodyne.etl.transformio.xml.Batch.Target;
 import org.patrodyne.etl.transformio.xml.Batch.Transform;
 import org.patrodyne.etl.transformio.xml.Batch.Transform.Script;
+import org.patrodyne.etl.transformio.xml.Locator;
+import org.patrodyne.etl.transformio.xml.Record;
 import org.patrodyne.etl.transformio.xml.Record.Field;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
@@ -102,7 +103,7 @@ abstract public class Transformer
 	/** Represents this project's home page. */
 	protected static final String LINK_HOME = "http://patrodyne.org/sites/etl-TransformIO";
 	/** Represents this project's donation page. */
-	protected static final String LINK_DONATE = "http://flattr.com/thing/446287/Patrodyne";
+	protected static final String LINK_DONATE = "http://flattr.com/thing/657653/TransformIO";
 
 	/**
 	 * An abstract logger to serve as a place holder for log messages.
@@ -129,6 +130,8 @@ abstract public class Transformer
 	protected void setCurrentBatchFile(File currentBatchFile)
 	{
 		this.currentBatchFile = currentBatchFile;
+		if ( currentBatchFile != null )
+			setCurrentWorkingDirectory(currentBatchFile);
 	}
 
 	// Represents the active {@link Batch} hash.
@@ -344,12 +347,9 @@ abstract public class Transformer
 	 * 
 	 * @return A {@link Batch} instance.
 	 * 
-	 * @throws JAXBException from {@link #unmarshalBatch(Reader)}.
-	 * @throws SAXException from {@link #unmarshalBatch(Reader)}.
-	 * 
 	 * @see Batch
 	 */
-	protected static Batch unmarshalBatch(String batchText) throws JAXBException, SAXException
+	protected static Batch unmarshalBatch(String batchText)
 	{
 		Batch batch = null;
 		if ( !isEmpty(batchText) )
@@ -361,17 +361,24 @@ abstract public class Transformer
 	
 	/**
 	 * <p>Reads a batch stream and instantiates a {@link Batch} object.</p>
+	 * <p>Assumes the validator will emit a notification for issues.</p>
 	 * 
 	 * @param batchReader A reader for a batch stream.
 	 * 
 	 * @return A {@link Batch} instance.
-	 * 
-	 * @throws JAXBException when the unmarshaller cannot parse the batch.
-	 * @throws SAXException when the XML Schema cannot be accessed or found. 
 	 */
-	protected static Batch unmarshalBatch(Reader batchReader) throws JAXBException, SAXException
+	protected static Batch unmarshalBatch(Reader batchReader)
 	{
-		return (Batch) getBatchUnmarshaller().unmarshal(batchReader);
+		Batch batch = null;
+		try
+		{
+			batch = (Batch) getBatchUnmarshaller().unmarshal(batchReader);
+		}
+		catch (Exception ex)
+		{
+			// Validator will emit the notification.
+		}
+		return batch;
 	}
 
 	/**
@@ -385,6 +392,7 @@ abstract public class Transformer
 
 		Source source = new Source();
 		source.setCharset("UTF-8");
+		source.setBufferSize(new BigInteger("256"));
 		Locator sourceLocator = new Locator();
 		sourceLocator.setUrl("file:input.txt");
 		source.setLocator(sourceLocator);
@@ -560,6 +568,7 @@ abstract public class Transformer
 		        }
 			}
 		}
+		int sourceBufferSize = batch.getSource().getBufferSize().intValue();
 		List<Field> sourceFieldSpecs = batch.getSource().getRecord().getFields();
 		List<Field> targetFieldSpecs = batch.getTarget().getRecord().getFields();
 		Map<String,Integer> sourceShuffle = new HashMap<String,Integer>();
@@ -574,18 +583,19 @@ abstract public class Transformer
 			Field targetFieldSpec = targetFieldSpecs.get(index);
 			targetShuffle.put(targetFieldSpec.getName(), index);
 		}
-		int sourceIndex = 0;
 		int sourceSize = sourceFieldSpecs.size();
 		int targetSize = targetFieldSpecs.size();
 		Field sourceFieldSpec = null;
 		String[] sourceFields = new String[sourceSize];
 		String[] targetFields = new String[targetSize];
 		StringBuilder buffer = new StringBuilder();
+		int sourceIndex = 0;
 		int errors = 0;
 		int recno = 0;
+		boolean bufferOverflow = false;
 		boolean nextRecord = true;
 		char ch;
-		while ((ch = (char) reader.read()) != EOS)
+		while ( ((ch = (char) reader.read()) != EOS) && !bufferOverflow )
 		{
 			buffer.append(ch);
 			if ( nextRecord )
@@ -609,8 +619,8 @@ abstract public class Transformer
 					int targetIndex = targetShuffle.get(sourceFieldSpec.getName());
 					targetFields[targetIndex] = sourceFieldSet;
 				}
-				buffer = new StringBuilder();
-				// Check for enough source fields.
+				buffer = new StringBuilder(sourceBufferSize);
+				// Check for enough source fields to compose the current record.
 				sourceIndex = ++sourceIndex % sourceSize;
 				if ( sourceIndex == 0 )
 				{
@@ -676,9 +686,17 @@ abstract public class Transformer
 						writer.write(targetFieldSet);
 						if ( debug && log().isTraceEnabled() )
 						{
-							int sourceIndexTmp = sourceShuffle.get(targetFieldSpec.getName());
-							log().trace((sourceIndexTmp+1)+" => "+(targetIndex+1)+": "+
-								targetFieldSpec.getName()+" = "+escape(targetFieldSet));
+							Integer sourceIndexTmp = sourceShuffle.get(targetFieldSpec.getName());
+							if ( sourceIndexTmp != null )
+							{
+								log().trace((sourceIndexTmp+1)+" => "+(targetIndex+1)+": "+
+									targetFieldSpec.getName()+" = "+escape(targetFieldSet));
+							}
+							else
+							{
+								log().trace("? => "+(targetIndex+1)+": "+
+									targetFieldSpec.getName()+" = "+escape(targetFieldSet));
+							}
 						}
 					}
 					sourceFields = new String[sourceSize];
@@ -686,9 +704,19 @@ abstract public class Transformer
 					nextRecord = true;
 				}
 			}
+			if ( buffer.length() >= sourceBufferSize )
+				bufferOverflow = true;
 		}
-		log().info("Transform: DONE ("+recno+")");
-		if ( errors > 0 )
+		if ( !nextRecord || bufferOverflow)
+		{
+			++errors;
+			String msg = bufferOverflow ? "Buffer Overflow, " : "Incomplete ";
+			String fieldName = sourceFieldSpecs.get(sourceIndex).getName();
+			log().error(msg+"Record# "+recno+", Field# "+sourceIndex+" ("+fieldName+")");
+		}
+		if ( errors == 0 )
+			log().info("Transform: SUCCESS ("+recno+")");
+		else
 			notification(MessageType.ERROR, "Batch error count: "+errors+". See log for details.");
 	}
 
@@ -1014,7 +1042,7 @@ abstract public class Transformer
 	{
 		StackTraceElement st = ex.getStackTrace()[0];
 		String error = ex.getClass().getSimpleName()
-			+": "+ex.getLocalizedMessage()
+			+": "+ex.getMessage()
 			+", "+st.getFileName()
 			+"@"+st.getLineNumber();
 		return error;
@@ -1204,6 +1232,7 @@ abstract public class Transformer
 		}
 	}
 	
+	private File currentWorkingDirectory;
 	/**
 	 * Get the current working directory.
 	 * 
@@ -1211,13 +1240,31 @@ abstract public class Transformer
 	 */
 	protected File getCurrentWorkingDirectory()
 	{
-		String userDir = System.getProperty("user.dir");
-		if ( userDir != null )
-			return new File(System.getProperty("user.dir"));
-		else
-			return null;
+		if ( currentWorkingDirectory == null )
+		{
+			String userDir = System.getProperty("user.dir");
+			if ( userDir != null )
+				setCurrentWorkingDirectory(new File(userDir));
+		}
+		return currentWorkingDirectory;
 	}
-	
+	/**
+	 * Set the current working directory.
+	 * @param currentWorkingDirectory The current working directory. 
+	 */
+	protected void setCurrentWorkingDirectory(File cwd)
+	{
+		if ( cwd != null )
+		{
+			if ( cwd.isDirectory() )
+				this.currentWorkingDirectory = cwd;
+			else
+				this.currentWorkingDirectory = cwd.getParentFile();
+		}
+		else
+			this.currentWorkingDirectory = null;
+	}
+
 	private static String about;
 	/**
 	 * About this product.

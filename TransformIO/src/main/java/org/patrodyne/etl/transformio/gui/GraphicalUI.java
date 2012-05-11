@@ -502,6 +502,9 @@ public class GraphicalUI extends Transformer implements Runnable
 		JMenuItem mntmDonate = new JMenuItem("Donate");
 		mnHelp.add(mntmDonate);
 		
+		JMenuItem mntmKeys = new JMenuItem("Keys");
+		mnHelp.add(mntmKeys);
+		
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mnHelp.add(mntmAbout);
 		
@@ -548,7 +551,7 @@ public class GraphicalUI extends Transformer implements Runnable
 								{
 									openURL(sourceTextArea, batch.getSource().getLocator());
 									setCurrentSourceHash(sourceTextArea.getText().hashCode());
-									transformBlank(targetTextArea);
+									blank(targetTextArea);
 									// Add Undo/Redo Listener
 									addUndoableEditListener(batchTextArea);
 								}
@@ -856,7 +859,7 @@ public class GraphicalUI extends Transformer implements Runnable
 				{
 					try
 					{
-						transformBlank(targetTextArea);
+						blank(targetTextArea);
 					}
 					catch (Exception ex)
 					{
@@ -894,7 +897,7 @@ public class GraphicalUI extends Transformer implements Runnable
 				{
 					try
 					{
-						transformBlank(consoleTextArea);
+						blank(consoleTextArea);
 					}
 					catch (Exception ex)
 					{
@@ -950,6 +953,19 @@ public class GraphicalUI extends Transformer implements Runnable
 					{
 						notification(ex);
 					}
+				}
+			}
+		);
+
+		mntmKeys.addActionListener
+		(
+			new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					JDialog keysDialog = new QuickKeys(frame);
+					keysDialog.setVisible(true);
 				}
 			}
 		);
@@ -1025,6 +1041,8 @@ public class GraphicalUI extends Transformer implements Runnable
 			close(txtrBatch, txtrSource, txtrTarget, chckbxmntmEdit, mntmSaveSource);
 			confirmClose = true;
 		}
+		if ( confirmClose )
+			setCurrentBatchFile(null);
 		return confirmClose;
 	}
 	
@@ -1039,11 +1057,12 @@ public class GraphicalUI extends Transformer implements Runnable
 		mntmSaveSource.setEnabled(false);
 		// Add Undo/Redo Listener
 		addUndoableEditListener(txtrBatch);
+		// Reset batch and source.
 		setCurrentBatchHash(txtrBatch.getText().hashCode());
 		setCurrentSourceHash(txtrSource.getText().hashCode());
 	}
 	
-	private void transformBlank(JTextArea txtrArea)
+	private void blank(JTextArea txtrArea)
 	{
 		txtrArea.setText("");
 	}
@@ -1054,7 +1073,8 @@ public class GraphicalUI extends Transformer implements Runnable
 		Batch batch = unmarshalBatch(txtrBatch.getText());
 		if ( batch != null )
 		{
-			// Use current edits? refreshSource(txtrSource, batch);
+			// Use current edits, source is optional.
+			// refreshSource(txtrSource, batch);
 			txtrTarget.setText(transform(batch, txtrSource.getText()));
 		}
 	}
@@ -1066,7 +1086,7 @@ public class GraphicalUI extends Transformer implements Runnable
 		if ( batch != null )
 		{
 			refreshSource(txtrSource, batch);
-			transformBlank(txtrTarget);
+			blank(txtrTarget);
 			execute(batch, false);
 			txtrTarget.setText("Target: "+resolve(batch.getTarget().getLocator()));
 		}
@@ -1076,7 +1096,7 @@ public class GraphicalUI extends Transformer implements Runnable
 		throws IOException
 	{
 		if ( (batch.getSource() == null) || batch.getSource().getLocator() == null )
-			transformBlank(txtrSource);
+			blank(txtrSource);
 		else
 			openURL(txtrSource, batch.getSource().getLocator());
 	}
@@ -1205,7 +1225,10 @@ public class GraphicalUI extends Transformer implements Runnable
 			if ((file = chooser.getSelectedFile()) != null)
 				save(textArea, file);
 			else
+			{
 				file = currentFile;
+				notification(MessageType.INFO, "Save aborted, no file selected.");
+			}
 		}
 		else
 			notification(MessageType.INFO, "Save canceled by user.");
