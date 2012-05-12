@@ -55,7 +55,7 @@
 		</menu>
 		
 		<menu name="Download">
-			<item name="Pre-release" href="install.jnlp"/>
+			<item name="Pre-release" href="Patrodyne-ETL-TransformIO.jnlp"/>
 <!-- 
 			<item name="Artifacts" href="http://search.maven.org/#search|ga|1|a%3A%22patrodyne-etl-TransformIO%22"/>
 -->

@@ -15,7 +15,7 @@
 
 	<resources>
 		<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-		<jar href="patrodyne-etl-TransformIO-1.0.0-20120502.013727-1-install.jar"/>
+		<jar href="patrodyne-etl-TransformIO-1.0.0-20120511.011902-2-install.jar"/>
 	</resources>
 
 	<application-desc
