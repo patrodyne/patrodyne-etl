@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+	Transform a tab separated list of food prices into a pipe separated
+	list with calculation of price changes.	Data from Canadian Food Prices
+	at http://www.livingin-canada.com/food-prices-canada.html.
+-->
+<batch xmlns="http://patrodyne.org/etl/TransformIO">
+	<source charset="UTF-8" bufferSize="256">
+		<locator url="file:egs/03TabSeparatedValue/CanadianFoodPrices.txt"/>
+		<record>
+			<field name="Item" get="(.*)\t" set="$1"/>
+			<field name="QtyAndUnit" get="(.*)\t" set="$1"/>
+			<field name="Price2012" get="(.*)\t" set="$1"/>
+			<field name="Price2010" get="(.*)\n" set="$1"/>
+		</record>
+	</source>
+	<target charset="UTF-8" byteOrderMark="false">
+		<locator url="file:egs/03TabSeparatedValue/CanadianFoodPricesChange.txt"/>
+		<record>
+			<field name="recno" get="(.*)" set="$1|"/>
+			<field name="Item" get="(.*)" set="$1|"/>
+			<field name="Quantity" get="(.*)" set="$1|"/>
+			<field name="Unit" get="(.*)" set="$1|"/>
+			<field name="Price2012" get="(.*)" set="$1|"/>
+			<field name="Price2010" get="(.*)" set="$1|"/>
+			<field name="UnitPrice2012" get="(.*)" set="$1|"/>
+			<field name="UnitPrice2010" get="(.*)" set="$1|"/>
+			<field name="Change$" get="(.*)" set="$1|"/>
+			<field name="Change%" get="(.*)" set="$1\n"/>
+		</record>
+	</target>
+	<transform>
+		<script engine="JavaScript">
+main();
+function main()
+{
+	var recno = Number(global.get('recno')) + 1;
+	global.put('recno', recno);
+	target.put('recno', recno.toFixed(0));
+	if ( recno == 1 )
+	{
+		target.put('Item',source.get('Item').trim());
+		target.put('Quantity',source.get('QtyAndUnit').trim());
+		target.put('Unit','Unit');
+		target.put('Price2012',source.get('Price2012').trim());
+		target.put('Price2010',source.get('Price2010').trim());
+		target.put('UnitPrice2012','UnitPrice2012');
+		target.put('UnitPrice2010','UnitPrice2010');
+		target.put('Change$','Change$');
+		target.put('Change%','Change%');
+	}
+	else
+	{
+		target.put('Item',source.get('Item').trim());
+		var qtyAndUnit = source.get('QtyAndUnit').trim().split(' ');
+		var qty = Number(qtyAndUnit[0]);
+		target.put('Quantity',qty.toFixed(0));
+		if ( qtyAndUnit.length == 2 )
+			target.put('Unit',qtyAndUnit[1]);
+		else
+			target.put('Unit','each');
+		var price2012 = Number(source.get('Price2012'));
+		var price2010 = Number(source.get('Price2010'));
+		target.put('Price2012',price2012.toFixed(2));
+		target.put('Price2010',price2010.toFixed(2));
+		var unitPrice2012 = 100 * (price2012 / qty);
+		var unitPrice2010 = 100 * (price2010 / qty);
+		target.put('UnitPrice2012',unitPrice2012.toFixed(1));
+		target.put('UnitPrice2010',unitPrice2010.toFixed(1));
+		var change = price2012 - price2010;
+		target.put('Change$',change.toFixed(2));
+		var percent = 100 * (change / price2010);
+		target.put('Change%',percent.toFixed(2));
+	}
+	return target;
+}
+		</script>
+	</transform>
+</batch>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->
