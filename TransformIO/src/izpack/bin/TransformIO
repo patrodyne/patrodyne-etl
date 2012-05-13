@@ -1,3 +1,6 @@
 #!/bin/sh
-java -D%{JVM_CFG_LOG} -Djava.ext.dirs=%{EXT_DIR} -jar "%{INSTALL_PATH}/%{FINAL_NAME}.jar" mode="GUI"
+# Set the base directory to the location of this script.
+BASEDIR="$( cd -P "$( dirname "$0" )" && pwd )"
+# Execute Transformio.sh in GUI mode.
+${BASEDIR}/TransformIO.sh mode=GUI $*
 # vi:set tabstop=4 hardtabs=4 shiftwidth=4:

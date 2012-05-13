@@ -589,6 +589,7 @@ abstract public class Transformer
 		String[] sourceFields = new String[sourceSize];
 		String[] targetFields = new String[targetSize];
 		StringBuilder buffer = new StringBuilder();
+		Map<String, Object> global = new HashMap<String, Object>();
 		int sourceIndex = 0;
 		int errors = 0;
 		int recno = 0;
@@ -627,6 +628,7 @@ abstract public class Transformer
 					// Optional Script Transformation
 					if ( scriptEngine != null )
 					{
+						bindings.put("global", global);
 						bindings.put("source", map(sourceFieldSpecs, sourceFields));
 						bindings.put("target", map(targetFieldSpecs, targetFields));
 						Object result = null;
@@ -638,6 +640,9 @@ abstract public class Transformer
 							if ( !isEmpty(script) )
 								result = scriptEngine.eval(script, bindings);
 						}
+						@SuppressWarnings("unchecked")
+						Map<String, Object> castGlobal = (Map<String, Object>) bindings.get("global");
+						global = castGlobal;
 						if ( !(result instanceof Map) )
 							result = bindings.get("target");
 						if ( result != null )
@@ -754,19 +759,14 @@ abstract public class Transformer
 
 	private static String replaceFirst(String text, String regex, String replacement)
 	{
-		if ( text != null )
+		try
 		{
-			try
-			{
-		    	return matcher(regex, text).replaceFirst(replacement);
-			}
-			catch (Exception ex)
-			{
-				return text;
-			}
+	    	return matcher(regex, text != null ? text : "").replaceFirst(replacement);
 		}
-		else
+		catch (Exception ex)
+		{
 			return text;
+		}
 	}
 
 	private static Schema schema;
