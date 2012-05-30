@@ -156,11 +156,11 @@ as a Java Scripting Engine (JSR-223).
    		</sequence>
    	</complexType>
 
-    <complexType name="recordType">
-		<annotation>
-			<appinfo>
-				<jxb:class name="Record">
-<jxb:javadoc><![CDATA[
+   	<complexType name="recordType">
+   		<annotation>
+   			<appinfo>
+   				<jxb:class name="Record">
+   					<jxb:javadoc><![CDATA[
 <p>A record is data divided into fields, in fixed number and sequence and identified by name.
 Each field is given a name, a <em>get</em> regular expression and a <em>set</em> replacement 
 string. A <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expression</a>
@@ -210,16 +210,17 @@ their assigned values. The <code>Phone</code> field appends a pipe to delimit it
 from the next field and the <code>Name</code> field appends a new-line character to
 end the record.</p>
 ]]></jxb:javadoc>
-				</jxb:class>
-			</appinfo>
-		</annotation>
-    	<sequence>
-    		<element name="field" maxOccurs="unbounded" minOccurs="1">
-    			<complexType>
-					<annotation>
-						<appinfo>
-							<jxb:class name="Field">
-<jxb:javadoc><![CDATA[
+   				</jxb:class>
+   			</appinfo>
+   		</annotation>
+   		<sequence>
+   			<element name="field" maxOccurs="unbounded"
+   				minOccurs="1">
+   				<complexType>
+   					<annotation>
+   						<appinfo>
+   							<jxb:class name="Field">
+   								<jxb:javadoc><![CDATA[
 <p>A field represents a single value within a record. It has a name, a get 
 expression and a set expression. The get expression is a 
 <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expression</a> 
@@ -234,18 +235,25 @@ and handled. We prefer to keep field parsing and type conversion as two
 separate concerns. When type conversion is needed, it can be handled in
 the transformation script where error handling can be better implemented.</p>
 ]]></jxb:javadoc>
-							</jxb:class>
-						</appinfo>
-					</annotation>
-    				<attribute name="name" type="string" use="required"></attribute>
-    				<attribute name="get" type="string" use="required"></attribute>
-    				<attribute name="set" type="string" use="required"></attribute>
-    			</complexType>
-    		</element>
-    	</sequence>
-    </complexType>
+   							</jxb:class>
+   						</appinfo>
+   					</annotation>
+   					<attribute name="name" type="string"
+   						use="required">
+   					</attribute>
+   					<attribute name="get" type="string"
+   						use="required">
+   					</attribute>
+   					<attribute name="set" type="string"
+   						use="required">
+   					</attribute>
+   				</complexType>
+   			</element>
+   		</sequence>
+   		<attribute name="exclude" type="string" use="optional"></attribute>
+   	</complexType>
 
-    <complexType name="locatorType">
+   	<complexType name="locatorType">
 		<annotation>
 			<appinfo>
 				<jxb:class name="Locator">

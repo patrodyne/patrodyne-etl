@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -21,8 +23,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Stack;
 
-import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -39,16 +41,12 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextArea;
 import org.patrodyne.etl.transformio.MessageType;
 import org.patrodyne.etl.transformio.Transformer;
 import org.patrodyne.etl.transformio.xml.Batch;
@@ -69,9 +67,6 @@ public class GraphicalUI extends Transformer implements Runnable
 	private static JSplitPane splitPaneMain;
 	private static JSplitPane splitPaneBatch;
 	private static JSplitPane splitPaneRight;
-	private UndoableEditListener batchUndoableEditListener = null;
-	private JMenuItem mntmUndo = null, mntmRedo = null;
-	private ActionListener undoActionListener, redoActionListener;
 
 	private static transient Logger log = LoggerFactory.getLogger(GraphicalUI.class);
 	
@@ -290,6 +285,19 @@ public class GraphicalUI extends Transformer implements Runnable
 	}
 	
 	/**
+	 * Set current batch file and set title.
+	 * @see {@link #setCurrentBatchFile(File)}
+	 */
+	protected void setCurrentBatchFile(File currentBatchFile)
+	{
+		super.setCurrentBatchFile(currentBatchFile);
+		if ( currentBatchFile != null )
+			frame.setTitle(currentBatchFile.getPath());
+		else
+			frame.setTitle("");
+	}
+	
+	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(Properties options)
@@ -329,7 +337,7 @@ public class GraphicalUI extends Transformer implements Runnable
 		JScrollPane batchPane = new JScrollPane(batchTextArea);
 		splitPaneBatch.setLeftComponent(batchPane);
 		
-		final JTextArea sourceTextArea = new JTextArea();
+		final RTextArea sourceTextArea = new RTextArea();
 		sourceTextArea.setTabSize(DEFAULT_TAB_SIZE);
 		sourceTextArea.setEditable(false);
 		sourceTextArea.setFont(getPreferredFont());
@@ -340,7 +348,7 @@ public class GraphicalUI extends Transformer implements Runnable
 		JScrollPane sourcePane = new JScrollPane(sourceTextArea);
 		splitPaneRight.setLeftComponent(sourcePane);
 		
-		final JTextArea targetTextArea = new JTextArea();
+		final RTextArea targetTextArea = new RTextArea();
 		targetTextArea.setTabSize(DEFAULT_TAB_SIZE);
 		targetTextArea.setEditable(false);
 		targetTextArea.setFont(getPreferredFont());
@@ -351,11 +359,14 @@ public class GraphicalUI extends Transformer implements Runnable
 		JScrollPane targetPane = new JScrollPane(targetTextArea);
 		splitPaneRight.setRightComponent(targetPane);
 		
-		final JTextArea consoleTextArea = new JTextArea();
+		final RTextArea consoleTextArea = new RTextArea();
 		consoleTextArea.setTabSize(DEFAULT_TAB_SIZE);
 		consoleTextArea.setEditable(false);
 		consoleTextArea.setFont(getPreferredFont());
 		consoleTextArea.setLineWrap(getPreferredInitialWrapConsoleData());
+		
+		final Stack<RTextArea> textAreaHistory = new Stack<RTextArea>();
+		textAreaHistory.push(batchTextArea);
 		
 		JScrollPane consolePane = new JScrollPane(consoleTextArea);
 		splitPaneMain.setBottomComponent(consolePane);
@@ -409,11 +420,11 @@ public class GraphicalUI extends Transformer implements Runnable
 		JMenu mnEdit = new JMenu("Edit");
 		menuBar.add(mnEdit);
 		
-		mntmUndo = new JMenuItem("Undo");
+		JMenuItem mntmUndo = new JMenuItem("Undo");
 		mntmUndo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
 		mnEdit.add(mntmUndo);
 		
-		mntmRedo = new JMenuItem("Redo");
+		JMenuItem mntmRedo = new JMenuItem("Redo");
 		mntmRedo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK));
 		mnEdit.add(mntmRedo);
 		
@@ -508,6 +519,70 @@ public class GraphicalUI extends Transformer implements Runnable
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mnHelp.add(mntmAbout);
 		
+		batchTextArea.addFocusListener
+		(
+			new FocusListener()
+			{
+				@Override
+				public void focusLost(FocusEvent e)	{ }
+				
+				@Override
+				public void focusGained(FocusEvent e)
+				{
+					textAreaHistory.clear();
+					textAreaHistory.push(batchTextArea);
+				}
+			}
+		);
+		
+		sourceTextArea.addFocusListener
+		(
+			new FocusListener()
+			{
+				@Override
+				public void focusLost(FocusEvent e)	{ }
+				
+				@Override
+				public void focusGained(FocusEvent e)
+				{
+					textAreaHistory.clear();
+					textAreaHistory.push(sourceTextArea);
+				}
+			}
+		);
+		
+		targetTextArea.addFocusListener
+		(
+			new FocusListener()
+			{
+				@Override
+				public void focusLost(FocusEvent e)	{ }
+				
+				@Override
+				public void focusGained(FocusEvent e)
+				{
+					textAreaHistory.clear();
+					textAreaHistory.push(targetTextArea);
+				}
+			}
+		);
+		
+		consoleTextArea.addFocusListener
+		(
+			new FocusListener()
+			{
+				@Override
+				public void focusLost(FocusEvent e)	{ }
+				
+				@Override
+				public void focusGained(FocusEvent e)
+				{
+					textAreaHistory.clear();
+					textAreaHistory.push(consoleTextArea);
+				}
+			}
+		);
+		
 		mntmNew.addActionListener
 		(
 			new ActionListener()
@@ -552,8 +627,6 @@ public class GraphicalUI extends Transformer implements Runnable
 									openURL(sourceTextArea, batch.getSource().getLocator());
 									setCurrentSourceHash(sourceTextArea.getText().hashCode());
 									blank(targetTextArea);
-									// Add Undo/Redo Listener
-									addUndoableEditListener(batchTextArea);
 								}
 							}
 						}
@@ -658,6 +731,30 @@ public class GraphicalUI extends Transformer implements Runnable
 		    }
 		);
 		
+		mntmUndo.addActionListener
+		(
+			new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					textAreaHistory.peek().undoLastAction();
+				}
+			}
+		);
+		
+		mntmRedo.addActionListener
+		(
+			new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					textAreaHistory.peek().redoLastAction();
+				}
+			}
+		);
+		
 		mntmCut.addActionListener
 		(
 			new ActionListener()
@@ -665,7 +762,7 @@ public class GraphicalUI extends Transformer implements Runnable
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					batchTextArea.cut();
+					textAreaHistory.peek().cut();
 				}
 			}
 		);
@@ -677,7 +774,7 @@ public class GraphicalUI extends Transformer implements Runnable
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					batchTextArea.copy();
+					textAreaHistory.peek().copy();
 				}
 			}
 		);
@@ -689,7 +786,7 @@ public class GraphicalUI extends Transformer implements Runnable
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					batchTextArea.paste();
+					textAreaHistory.peek().paste();
 				}
 			}
 		);
@@ -989,8 +1086,6 @@ public class GraphicalUI extends Transformer implements Runnable
 			}
 		);
 		
-		// Add Undo/Redo Listener
-		addUndoableEditListener(batchTextArea);
 		// Start the console.
 		new ConsoleThread(consoleTextArea).start();
 		// Set preferred size and position.
@@ -1055,8 +1150,6 @@ public class GraphicalUI extends Transformer implements Runnable
 		txtrSource.setEditable(false);
 		chckbxmntmEdit.setSelected(false);
 		mntmSaveSource.setEnabled(false);
-		// Add Undo/Redo Listener
-		addUndoableEditListener(txtrBatch);
 		// Reset batch and source.
 		setCurrentBatchHash(txtrBatch.getText().hashCode());
 		setCurrentSourceHash(txtrSource.getText().hashCode());
@@ -1251,104 +1344,6 @@ public class GraphicalUI extends Transformer implements Runnable
 	private void saveURL(JTextArea textArea, Locator locator) throws IOException
 	{
 		saveURL(locator, textArea.getText());
-	}
-
-	// Listen for undo and redo events
-	@SuppressWarnings("serial")
-	private void addUndoableEditListener(final JTextArea txtrBatch)
-	{
-		final UndoManager txtrBatchUndo = new UndoManager();
-		if ( batchUndoableEditListener != null )
-		{
-			txtrBatch.getDocument().removeUndoableEditListener(batchUndoableEditListener);
-			mntmUndo.removeActionListener(undoActionListener);
-			mntmRedo.removeActionListener(redoActionListener);
-		}
-		batchUndoableEditListener = new UndoableEditListener() 
-		{
-			public void undoableEditHappened(UndoableEditEvent evt) 
-			{
-				txtrBatchUndo.addEdit(evt.getEdit());
-			}
-		};
-		txtrBatch.getDocument().addUndoableEditListener(batchUndoableEditListener);
-		// Create an undo action and add it to the text component
-		txtrBatch.getActionMap().put
-		(
-			"Undo",
-			new AbstractAction("Undo")
-			{
-				public void actionPerformed(ActionEvent evt)
-				{
-					try
-					{
-						if (txtrBatchUndo.canUndo())
-							txtrBatchUndo.undo();
-					}
-					catch (CannotUndoException cue) 
-					{
-					}
-				}
-			}
-		);
-		// Bind the undo action to control-Z (or command-Z)
-		txtrBatch.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, 
-			InputEvent.CTRL_MASK), "Undo" );
-		// Add Undo listener to Undo menu item
-		undoActionListener = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				try
-				{
-					if (txtrBatchUndo.canUndo())
-						txtrBatchUndo.undo();
-				}
-				catch (CannotUndoException cue) 
-				{
-				}
-			}
-		};
-		mntmUndo.addActionListener(undoActionListener);
-		
-		// Create a redo action and add it to the text component
-		txtrBatch.getActionMap().put
-		(
-			"Redo",
-			new AbstractAction("Redo")
-			{
-				public void actionPerformed(ActionEvent evt)
-				{
-					try
-					{
-						if (txtrBatchUndo.canRedo())
-							txtrBatchUndo.redo();
-					}
-					catch (CannotRedoException cre) 
-					{
-					}
-				}
-			}
-		);
-		// Bind the redo action to control-Y
-		txtrBatch.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, 
-			InputEvent.CTRL_MASK), "Redo" );
-		// Add Redo listener to Redo menu item
-		redoActionListener = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				try
-				{
-					if (txtrBatchUndo.canRedo())
-						txtrBatchUndo.redo();
-				}
-				catch (CannotRedoException cre) 
-				{
-				}
-			}
-		};
-		mntmRedo.addActionListener(redoActionListener);
 	}
 
 	private class ConsoleThread extends Thread

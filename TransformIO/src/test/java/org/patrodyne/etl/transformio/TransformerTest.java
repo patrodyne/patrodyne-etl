@@ -27,7 +27,7 @@ public class TransformerTest
 		"<batch xmlns=\"http://patrodyne.org/etl/TransformIO\">\n"+
 		"\t<source charset=\"UTF-8\" bufferSize=\"256\">\n"+
 		"\t\t<locator url=\"file:input.txt\"/>\n"+
-		"\t\t<record>\n"+
+		"\t\t<record exclude=\"\\s*\\n\">\n"+
 		"\t\t\t<field name=\"F01\" get=\"(.*)\\n\" set=\"$1\"/>\n"+
 		"\t\t</record>\n"+
 		"\t</source>\n"+

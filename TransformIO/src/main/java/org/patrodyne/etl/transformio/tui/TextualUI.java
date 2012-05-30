@@ -208,6 +208,19 @@ public class TextualUI extends Transformer implements Runnable
 	}
 
 	/**
+	 * Set current batch file and set title.
+	 * @see {@link #setCurrentBatchFile(File)}
+	 */
+	protected void setCurrentBatchFile(File currentBatchFile)
+	{
+		super.setCurrentBatchFile(currentBatchFile);
+		if ( currentBatchFile != null )
+			frame.setTitle(currentBatchFile.getPath());
+		else
+			frame.setTitle("");
+	}
+	
+	/**
 	 * Initialize the contents of the frame.
 	 * 
 	 * @wbp.parser.entryPoint

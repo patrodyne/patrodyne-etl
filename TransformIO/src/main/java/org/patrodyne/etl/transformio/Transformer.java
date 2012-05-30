@@ -397,6 +397,7 @@ abstract public class Transformer
 		sourceLocator.setUrl("file:input.txt");
 		source.setLocator(sourceLocator);
 		Record sourceRecord = new Record();
+		sourceRecord.setExclude("\\s*\\n");
 		Field sourceField01 = new Field();
 		sourceField01.setName("F01");
 		sourceField01.setGet("(.*)\\n");
@@ -569,6 +570,7 @@ abstract public class Transformer
 			}
 		}
 		int sourceBufferSize = batch.getSource().getBufferSize().intValue();
+		String sourceExcludeSpec = batch.getSource().getRecord().getExclude();
 		List<Field> sourceFieldSpecs = batch.getSource().getRecord().getFields();
 		List<Field> targetFieldSpecs = batch.getTarget().getRecord().getFields();
 		Map<String,Integer> sourceShuffle = new HashMap<String,Integer>();
@@ -588,27 +590,44 @@ abstract public class Transformer
 		Field sourceFieldSpec = null;
 		String[] sourceFields = new String[sourceSize];
 		String[] targetFields = new String[targetSize];
-		StringBuilder buffer = new StringBuilder();
-		Map<String, Object> global = new HashMap<String, Object>();
+		StringBuilder recordBuffer = new StringBuilder();
+		StringBuilder fieldBuffer = new StringBuilder();
+		Map<String, Object> common = new HashMap<String, Object>();
 		int sourceIndex = 0;
 		int errors = 0;
 		int recno = 0;
 		boolean bufferOverflow = false;
 		boolean nextRecord = true;
+		boolean omitRecord = false;
 		char ch;
-		while ( ((ch = (char) reader.read()) != EOS) && !bufferOverflow )
+		long t1 = System.currentTimeMillis();
+		while ( ((ch = (char) reader.read()) != EOS) && !bufferOverflow)
 		{
-			buffer.append(ch);
+			fieldBuffer.append(ch);
+			if ( sourceExcludeSpec != null )
+			{
+				if ( nextRecord )
+					recordBuffer = new StringBuilder(sourceBufferSize);
+				recordBuffer.append(ch);
+				if ( matches(sourceExcludeSpec, recordBuffer.toString()) )
+				{
+					fieldBuffer = new StringBuilder(sourceBufferSize);
+					nextRecord = true;
+					log().trace("Record: "+recno+" excluded.");
+					continue;
+				}
+			}
 			if ( nextRecord )
 			{
 				nextRecord = false;
+				omitRecord = false;
 				++recno;
 				if ( debug ) 
 					log().debug("Record: "+recno);
 			}
 			sourceFieldSpec = sourceFieldSpecs.get(sourceIndex);
 			String sourceFieldSpecGet = sourceFieldSpec.getGet();
-			String sourceFieldGet = buffer.toString();
+			String sourceFieldGet = fieldBuffer.toString();
 			if ( matches(sourceFieldSpecGet, sourceFieldGet) )
 			{
 				String sourceFieldSpecSet = literal(sourceFieldSpec.getSet());
@@ -620,7 +639,7 @@ abstract public class Transformer
 					int targetIndex = targetShuffle.get(sourceFieldSpec.getName());
 					targetFields[targetIndex] = sourceFieldSet;
 				}
-				buffer = new StringBuilder(sourceBufferSize);
+				fieldBuffer = new StringBuilder(sourceBufferSize);
 				// Check for enough source fields to compose the current record.
 				sourceIndex = ++sourceIndex % sourceSize;
 				if ( sourceIndex == 0 )
@@ -628,7 +647,7 @@ abstract public class Transformer
 					// Optional Script Transformation
 					if ( scriptEngine != null )
 					{
-						bindings.put("global", global);
+						bindings.put("common", common);
 						bindings.put("source", map(sourceFieldSpecs, sourceFields));
 						bindings.put("target", map(targetFieldSpecs, targetFields));
 						Object result = null;
@@ -641,8 +660,8 @@ abstract public class Transformer
 								result = scriptEngine.eval(script, bindings);
 						}
 						@SuppressWarnings("unchecked")
-						Map<String, Object> castGlobal = (Map<String, Object>) bindings.get("global");
-						global = castGlobal;
+						Map<String, Object> castCommon = (Map<String, Object>) bindings.get("common");
+						common = castCommon;
 						if ( !(result instanceof Map) )
 							result = bindings.get("target");
 						if ( result != null )
@@ -653,14 +672,17 @@ abstract public class Transformer
 								{
 									@SuppressWarnings("unchecked")
 									Map<String,String> resultMap = (Map<String,String>) result;
-									if ( resultMap.size() == targetFields.length )
+									if ( resultMap.size() > 0 )
 									{
 										for ( int index=0; index < targetFields.length; ++index)
 										{
 											String name = targetFieldSpecs.get(index).getName();
-											targetFields[index] = resultMap.get(name);
+											if ( resultMap.containsKey(name) )
+												targetFields[index] = resultMap.get(name);
 										}
 									}
+									else
+										omitRecord = true;
 								}
 								catch ( ClassCastException cce )
 								{
@@ -680,27 +702,32 @@ abstract public class Transformer
 							log().error("Script does not return a result");
 						}
 					}
-					// Target Transformation and Write
-					for ( int targetIndex=0; targetIndex < targetFields.length; ++targetIndex)
+					if ( omitRecord )
+						log().trace("Record: "+recno+" omitted.");
+					else
 					{
-						String targetField = targetFields[targetIndex];
-						Field targetFieldSpec = targetFieldSpecs.get(targetIndex);
-						String targetFieldSpecGet = targetFieldSpec.getGet();
-						String targetFieldSpecSet = literal(targetFieldSpec.getSet());
-						String targetFieldSet = replaceFirst(targetField, targetFieldSpecGet, targetFieldSpecSet);
-						writer.write(targetFieldSet);
-						if ( debug && log().isTraceEnabled() )
+						// Target Transformation and Write
+						for ( int targetIndex=0; targetIndex < targetFields.length; ++targetIndex)
 						{
-							Integer sourceIndexTmp = sourceShuffle.get(targetFieldSpec.getName());
-							if ( sourceIndexTmp != null )
+							String targetField = targetFields[targetIndex];
+							Field targetFieldSpec = targetFieldSpecs.get(targetIndex);
+							String targetFieldSpecGet = targetFieldSpec.getGet();
+							String targetFieldSpecSet = literal(targetFieldSpec.getSet());
+							String targetFieldSet = replaceFirst(targetField, targetFieldSpecGet, targetFieldSpecSet);
+							writer.write(targetFieldSet);
+							if ( debug && log().isTraceEnabled() )
 							{
-								log().trace((sourceIndexTmp+1)+" => "+(targetIndex+1)+": "+
-									targetFieldSpec.getName()+" = "+escape(targetFieldSet));
-							}
-							else
-							{
-								log().trace("? => "+(targetIndex+1)+": "+
-									targetFieldSpec.getName()+" = "+escape(targetFieldSet));
+								Integer sourceIndexTmp = sourceShuffle.get(targetFieldSpec.getName());
+								if ( sourceIndexTmp != null )
+								{
+									log().trace((sourceIndexTmp+1)+" => "+(targetIndex+1)+": "+
+										targetFieldSpec.getName()+" = "+escape(targetFieldSet));
+								}
+								else
+								{
+									log().trace("? => "+(targetIndex+1)+": "+
+										targetFieldSpec.getName()+" = "+escape(targetFieldSet));
+								}
 							}
 						}
 					}
@@ -709,7 +736,7 @@ abstract public class Transformer
 					nextRecord = true;
 				}
 			}
-			if ( buffer.length() >= sourceBufferSize )
+			if ( fieldBuffer.length() >= sourceBufferSize )
 				bufferOverflow = true;
 		}
 		if ( !nextRecord || bufferOverflow)
@@ -717,12 +744,18 @@ abstract public class Transformer
 			++errors;
 			String msg = bufferOverflow ? "Buffer Overflow, " : "Incomplete ";
 			String fieldName = sourceFieldSpecs.get(sourceIndex).getName();
-			log().error(msg+"Record# "+recno+", Field# "+sourceIndex+" ("+fieldName+")");
+			log().error(msg+"Record #"+recno+", Field #"+(sourceIndex+1)+" ("+fieldName+")");
 		}
+		long t2 = System.currentTimeMillis();
 		if ( errors == 0 )
-			log().info("Transform: SUCCESS ("+recno+")");
+		{
+			double duration = t2 - t1;
+			double count = recno;
+			double ms = (count > 0.0) ? duration / count : duration;
+			log().info(String.format("Transform: SUCCESS (%d, %.3f ms)", recno, ms));
+		}
 		else
-			notification(MessageType.ERROR, "Batch error count: "+errors+". See log for details.");
+			notification(MessageType.ERROR, "Batch error count: "+errors);
 	}
 
 	private Map<String,String> map(List<Field> sourceFieldSpecs, String[] sourceFields)
@@ -1061,8 +1094,16 @@ abstract public class Transformer
 	public void notification(Exception ex)
 	{
 		String msg = message(ex);
-		log().error(msg, ex);
-		notification(MessageType.ERROR, msg);
+		if ( ex instanceof FileNotFoundException )
+		{
+			log().warn(msg);
+			notification(MessageType.WARN, msg);
+		}
+		else
+		{	
+			log().error(msg, ex);
+			notification(MessageType.ERROR, msg);
+		}
 	}
 
 	/**

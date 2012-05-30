@@ -6,7 +6,7 @@
 -->
 <batch xmlns="http://patrodyne.org/etl/TransformIO">
 	<source charset="UTF-8" bufferSize="256">
-		<locator url="file:egs/03TabSeparatedValue/CanadianFoodPrices.txt"/>
+		<locator url="file:egs/03FoodPrices/CanadianFoodPrices.txt"/>
 		<record>
 			<field name="Item" get="(.*)\t" set="$1"/>
 			<field name="QtyAndUnit" get="(.*)\t" set="$1"/>
@@ -15,7 +15,7 @@
 		</record>
 	</source>
 	<target charset="UTF-8" byteOrderMark="false">
-		<locator url="file:egs/03TabSeparatedValue/CanadianFoodPricesChange.txt"/>
+		<locator url="file:egs/03FoodPrices/CanadianFoodPricesChange.txt"/>
 		<record>
 			<field name="recno" get="(.*)" set="$1|"/>
 			<field name="Item" get="(.*)" set="$1|"/>
@@ -34,8 +34,8 @@
 main();
 function main()
 {
-	var recno = Number(global.get('recno')) + 1;
-	global.put('recno', recno);
+	var recno = Number(common.get('recno')) + 1;
+	common.put('recno', recno);
 	target.put('recno', recno.toFixed(0));
 	if ( recno == 1 )
 	{
