@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch xmlns="http://patrodyne.org/etl/TransformIO">
+	<source charset="UTF-8" bufferSize="256">
+		<locator url="file:egs/06RiversFlat/rivers.txt"/>
+		<record>
+			<field name="Rank" get="(.{4})" set="$1"/>
+			<field name="River" get="(.{30})" set="$1"/>
+			<field name="Source" get="(.{70})" set="$1"/>
+			<field name="Mouth" get="(.{20})" set="$1"/>
+			<field name="Miles" get="(.{5})" set="$1"/>
+			<field name="Kilometer" get="(.{5})\n" set="$1"/>
+		</record>
+	</source>
+	<target charset="UTF-8">
+		<locator url="file:egs/06RiversFlat/rivers.psv"/>
+		<record>
+			<field name="Rank" get="(.*)" set="$1|"/>
+			<field name="River" get="(.*)" set="$1|"/>
+			<field name="Source" get="(.*)" set="$1|"/>
+			<field name="Mouth" get="(.*)" set="$1|"/>
+			<field name="Miles" get="(.*)" set="$1|"/>
+			<field name="Kilometer" get="(.*)" set="$1\n"/>
+		</record>
+	</target>
+	<transform>
+		<script engine="JavaScript">
+main();
+function main()
+{
+	target.put('Rank',source.get('Rank').trim());
+	target.put('River',source.get('River').trim());
+	target.put('Source',source.get('Source').trim());
+	target.put('Mouth',source.get('Mouth').trim());
+	target.put('Miles',source.get('Miles').trim());
+	target.put('Kilometer',source.get('Kilometer').trim());
+	return target;
+}
+		</script>
+	</transform>
+</batch>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

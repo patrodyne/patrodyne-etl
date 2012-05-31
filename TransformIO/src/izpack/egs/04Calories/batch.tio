@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+	From TeachITza - resource website for IT educators and learners in South Africa,
+	http://www.teachitza.com/data/
+-->
+<batch xmlns="http://patrodyne.org/etl/TransformIO">
+	<source charset="UTF-8" bufferSize="256">
+		<locator url="file:egs/04Calories/calories.csv"/>
+		<record>
+			<field name="Item"		get='("*)([^"]*)\1\s*,' set="$2"/>
+			<field name="Serving"	get='(.*),'				set="$1"/>
+			<field name="Calories"	get='(.*),\s*\n'		set="$1"/>
+		</record>
+	</source>
+	<target charset="UTF-8" byteOrderMark="false">
+		<locator url="file:egs/04Calories/calories.psv"/>
+		<record>
+			<field name="Item"		get="(.*)" set="$1|"/>
+			<field name="Portion"	get="(.*)" set="$1|"/>
+			<field name="Grams"		get="(\d*).*" set="$1|"/>
+			<field name="Calories"	get="(.*)" set="$1\n"/>
+		</record>
+	</target>
+	<transform>
+		<script engine="JavaScript">
+main();
+function main()
+{
+	target.put('Item',source.get('Item').trim());
+	var serving = source.get('Serving').trim().split('/');
+	if ( serving.length == 2 )
+	{
+		target.put('Portion', serving[0]);
+		target.put('Grams', serving[1]);
+	}
+	else
+		target.put('Grams', serving[0]);
+	target.put('Calories',source.get('Calories').trim());
+	return target;
+}
+		</script>
+	</transform>
+</batch>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

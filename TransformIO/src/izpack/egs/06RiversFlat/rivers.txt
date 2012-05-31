@@ -1,0 +1,54 @@
+﻿0001Nile                          Tributaries of Lake Victoria Africa                                   Mediterranean Sea   0418006690
+0002Amazon                        Glacier-fed lakes Peru                                                Atlantic Ocean      0391206296
+0003Mississippi-Missouri-Red Rock Source of Red Rock Montana                                            Gulf of Mexico      0371005970
+0004Chang Jiang (Yangtze)         Tibetan plateau China                                                 China Sea           0360205797
+0005Ob                            Altai Mts. Russia                                                     Gulf of Ob          0345905567
+0006Huang He (Yellow)             Eastern part of Kunlan Mts. West China                                Gulf of Chihli      0290004667
+0007Yenisei                       Tannu-Ola Mts. western Tuva Russia                                    Arctic Ocean        0280004506
+0008Paraná                        Confluence of Paranaiba and Grande rivers                             Río de la Plata     0279504498
+0009Irtish                        Altai Mts. Russia                                                     Ob River            0275804438
+0010Zaire (Congo)                 Confluence of Lualab and Luapula rivers Congo                         Atlantic Ocean      0271604371
+0011Heilong (Amur)                Confluence of Shilka (Russia) and Argun (Manchuria) rivers            Tatar Strait        0270404352
+0012Lena                          Baikal Mts. Russia                                                    Arctic Ocean        0265204268
+0013Mackenzie                     Head of Finlay River British Columbia Canada                          Beaufort Sea        0263504241
+0014Niger                         Guinea                                                                Gulf of Guinea      0260004184
+0015Mekong                        Tibetan highlands                                                     South China Sea     0250004023
+0016Mississippi                   Lake Itasca Minnesota                                                 Gulf of Mexico      0234803779
+0017Missouri                      Confluence of Jefferson Gallatin and Madison rivers Montana           Mississippi River   0231503726
+0018Volga                         Valdai plateau Russia                                                 Caspian Sea         0229103687
+0019Madeira                       Confluence of Beni and Maumoré rivers Bolivia–Brazil boundary         Amazon River        0201203238
+0020Purus                         Peruvian Andes                                                        Amazon River        0199303207
+0021São Francisco                 Southwest Minas Gerais Brazil                                         Atlantic Ocean      0198703198
+0022Yukon                         Junction of Lewes and Pelly rivers Yukon Territory Canada             Bering Sea          0197903185
+0023St. Lawrence                  Lake Ontario                                                          Gulf of St. Lawrence0190003058
+0024Rio Grande                    San Juan Mts. Colorado                                                Gulf of Mexico      0188503034
+0025Brahmaputra                   Himalayas                                                             Ganges River        0180002897
+0026Indus                         Himalayas                                                             Arabian Sea         0180002897
+0027Danube                        Black Forest Germany                                                  Black Sea           0176602842
+0028Euphrates                     Confluence of Murat Nehri and Kara Su rivers Turkey                   Shatt-al-Arab       0173902799
+0029Darling                       Central part of Eastern Highlands Australia                           Murray River        0170202739
+0030Zambezi                       11°21'S 24°22'E Zambia                                                Mozambique Channel  0170002736
+0031Tocantins                     Goiás Brazil                                                          Pará River          0167702699
+0032Murray                        Australian Alps New South Wales                                       Indian Ocean        0160902589
+0033Nelson                        Head of Bow River western Alberta Canada                              Hudson Bay          0160002575
+0034Paraguay                      Mato Grosso Brazil                                                    Paraná River        0158402549
+0035Ural                          Southern Ural Mts. Russia                                             Caspian Sea         0157402533
+0036Ganges                        Himalayas                                                             Bay of Bengal       0155702506
+0037Amu Darya (Oxus)              Nicholas Range Pamir Mts. Turkmenistan                                Aral Sea            0150002414
+0038Japurá                        Andes Colombia                                                        Amazon River        0150002414
+0039Salween                       Tibet south of Kunlun Mts.                                            Gulf of Martaban    0150002414
+0040Arkansas                      Central Colorado                                                      Mississippi River   0145902348
+0041Colorado                      Grand County Colorado                                                 Gulf of California  0145002333
+0042Dnieper                       Valdai Hills Russia                                                   Black Sea           0141902284
+0043Ohio-Allegheny                Potter County Pennsylvania                                            Mississippi River   0130602102
+0044Irrawaddy                     Confluence of Nmai and Mali rivers northeast Burma                    Bay of Bengal       0130002092
+0045Orange                        Lesotho                                                               Atlantic Ocean      0130002092
+0046Orinoco                       Serra Parima Mts. Venezuela                                           Atlantic Ocean      0128102062
+0047Pilcomayo                     Andes Mts. Bolivia                                                    Paraguay River      0124201999
+0048Xi Jiang (Si Kiang)           Eastern Yunnan Province China                                         China Sea           0123601989
+0049Columbia                      Columbia Lake British Columbia Canada                                 Pacific Ocean       0123201983
+0050Don                           Tula Russia                                                           Sea of Azov         0122301968
+0051Sungari                       China–North Korea boundary                                            Amur River          0121501955
+0052Saskatchewan                  Canadian Rocky Mts.                                                   Lake Winnipeg       0120501939
+0053Peace                         Stikine Mts. British Columbia Canada                                  Great Slave River   0119501923
+0054Tigris                        Taurus Mts. Turkey                                                    Shatt-al-Arab       0118001899

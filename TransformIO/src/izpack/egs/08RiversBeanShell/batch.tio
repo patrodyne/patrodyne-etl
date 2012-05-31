@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch xmlns="http://patrodyne.org/etl/TransformIO">
+	<source charset="UTF-8" bufferSize="256">
+		<locator url="file:egs/08RiversBeanShell/rivers.psv"/>
+		<record exclude="\s*\n">
+			<field name="Rank" get="(.*)\|" set="$1"/>
+			<field name="River" get="(.*)\|" set="$1"/>
+			<field name="Source" get="(.*)\|" set="$1"/>
+			<field name="Mouth" get="(.*)\|" set="$1"/>
+			<field name="Miles" get="(.*)\|" set="$1"/>
+			<field name="Kilometer" get="(.*)\n" set="$1"/>
+		</record>
+	</source>
+	<target charset="UTF-8" byteOrderMark="true">
+		<locator url="file:egs/08RiversBeanShell/rivers.txt"/>
+		<record>
+			<field name="Rank" get="(.*)" set="$1"/>
+			<field name="River" get="(.*)" set="$1"/>
+			<field name="Source" get="(.*)" set="$1"/>
+			<field name="Mouth" get="(.*)" set="$1"/>
+			<field name="Miles" get="(.*)" set="$1"/>
+			<field name="Kilometer" get="(.*)" set="$1\n"/>
+		</record>
+	</target>
+	<transform>
+		<script engine="beanshell">
+<![CDATA[
+char LEFT = 'L';
+char RIGHT = 'R';
+
+String box(String field, int width, char padding, char mode)
+{
+	String box = field;
+	if ( width <= field.length() )
+		box = field.substring(0, width);
+	else
+	{
+		StringBuilder pad = new StringBuilder();
+		for (int p=field.length(); p < width; ++p) 
+			pad.append(padding);
+		switch ( mode )
+		{
+			case LEFT: box = pad + field; break;
+			case RIGHT: box = field + pad; break;
+		}
+	}
+	return box;
+} 
+
+int recno = 1;
+if ( common.containsKey("recno") )
+	recno = (Integer) common.get("recno") + 1;
+common.put("recno", recno);
+
+if ( recno == 1 )
+	target.clear();
+else
+{
+	target.put("Rank", box(source.get("Rank"), 4, '0', LEFT));
+	target.put("River", box(source.get("River"), 30, ' ', RIGHT));
+	target.put("Source", box(source.get("Source"), 70, ' ', RIGHT));
+	target.put("Mouth", box(source.get("Mouth"), 20, ' ', RIGHT));
+	target.put("Miles", box(source.get("Miles"), 5, '0', LEFT));
+	target.put("Kilometer", box(source.get("Kilometer"), 5, '0', LEFT));
+}
+]]>
+		</script>
+	</transform>
+</batch>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

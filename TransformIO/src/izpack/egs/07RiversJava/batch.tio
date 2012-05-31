@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<batch xmlns="http://patrodyne.org/etl/TransformIO">
+	<source charset="UTF-8" bufferSize="256">
+		<locator url="file:egs/08RiversBeanShell/rivers.psv"/>
+		<record exclude="\s*\n">
+			<field name="Rank" get="(.*)\|" set="$1"/>
+			<field name="River" get="(.*)\|" set="$1"/>
+			<field name="Source" get="(.*)\|" set="$1"/>
+			<field name="Mouth" get="(.*)\|" set="$1"/>
+			<field name="Miles" get="(.*)\|" set="$1"/>
+			<field name="Kilometer" get="(.*)\n" set="$1"/>
+		</record>
+	</source>
+	<target charset="UTF-8" byteOrderMark="true">
+		<locator url="file:egs/08RiversBeanShell/rivers.txt"/>
+		<record>
+			<field name="Rank" get="(.*)" set="$1"/>
+			<field name="River" get="(.*)" set="$1"/>
+			<field name="Source" get="(.*)" set="$1"/>
+			<field name="Mouth" get="(.*)" set="$1"/>
+			<field name="Miles" get="(.*)" set="$1"/>
+			<field name="Kilometer" get="(.*)" set="$1\n"/>
+		</record>
+	</target>
+	<transform>
+		<script engine="Java">
+<![CDATA[
+import java.util.*;
+import javax.script.*;
+class Main
+{
+	private enum Mode { LEFT, RIGHT }
+	private static ScriptContext ctx;
+	public static void setScriptContext(ScriptContext ctx) { Main.ctx = ctx; }
+	public static void main(String[] args)
+	{
+		Map<String,Object> common = (Map<String,Object>) ctx.getAttribute("common");
+		Map<String,String> source = (Map<String,String>) ctx.getAttribute("source");
+		Map<String,String> target = (Map<String,String>) ctx.getAttribute("target");
+		int recno = 1;
+		if ( common.containsKey("recno") )
+			recno = (Integer) common.get("recno") + 1;
+		common.put("recno", recno);
+		if ( recno == 1 )
+			target.clear();
+		else
+		{
+			target.put("Rank", box(source.get("Rank"), 4, '0', Mode.LEFT));
+			target.put("River", box(source.get("River"), 30, ' ', Mode.RIGHT));
+			target.put("Source", box(source.get("Source"), 70, ' ', Mode.RIGHT));
+			target.put("Mouth", box(source.get("Mouth"), 20, ' ', Mode.RIGHT));
+			target.put("Miles", box(source.get("Miles"), 5, '0', Mode.LEFT));
+			target.put("Kilometer", box(source.get("Kilometer"), 5, '0', Mode.LEFT));
+		}
+	}
+	static String box(String field, int width, char padding, Mode mode)
+	{
+		String box = field;
+		if ( width <= field.length() )
+			box = field.substring(0, width);
+		else
+		{
+			StringBuilder pad = new StringBuilder();
+			for (int p=field.length(); p < width; ++p) 
+				pad.append(padding);
+			switch ( mode )
+			{
+				case LEFT: box = pad + field; break;
+				case RIGHT: box = field + pad; break;
+			}
+		}
+		return box;
+	}
+}
+]]>
+		</script>
+	</transform>
+</batch>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->
