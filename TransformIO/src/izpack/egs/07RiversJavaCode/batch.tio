@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <batch xmlns="http://patrodyne.org/etl/TransformIO">
 	<source charset="UTF-8" bufferSize="256">
-		<locator url="file:egs/08RiversBeanShell/rivers.psv"/>
+		<locator url="file:egs/07RiversJavaCode/rivers.psv"/>
 		<record exclude="\s*\n">
 			<field name="Rank" get="(.*)\|" set="$1"/>
 			<field name="River" get="(.*)\|" set="$1"/>
@@ -12,7 +12,7 @@
 		</record>
 	</source>
 	<target charset="UTF-8" byteOrderMark="true">
-		<locator url="file:egs/08RiversBeanShell/rivers.txt"/>
+		<locator url="file:egs/07RiversJavaCode/rivers.txt"/>
 		<record>
 			<field name="Rank" get="(.*)" set="$1"/>
 			<field name="River" get="(.*)" set="$1"/>
@@ -23,7 +23,7 @@
 		</record>
 	</target>
 	<transform>
-		<script engine="Java">
+		<script engine="JavaCode">
 <![CDATA[
 import java.util.*;
 import javax.script.*;

@@ -132,7 +132,6 @@
 					<version>2.6</version>
 				</plugin>
 
-
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -299,7 +298,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<delete dir="${site.home}" defaultexcludes="true" includeemptydirs="true" />
+								<delete dir="${site.home}" defaultexcludes="true" includeemptydirs="true"/>
 							</target>
 						</configuration>
 					</execution>
@@ -339,7 +338,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<fixcrlf srcdir="${site.home}" includes="**/*.html" eol="lf" />
+								<fixcrlf srcdir="${site.home}" includes="**/*.html" eol="lf"/>
 							</target>
 						</configuration>
 					</execution>

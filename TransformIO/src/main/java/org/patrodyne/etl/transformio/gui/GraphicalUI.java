@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
 
+import javax.script.ScriptException;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -726,7 +727,15 @@ public class GraphicalUI extends Transformer implements Runnable
 		    {
 		        public void windowClosing(WindowEvent e)
 		        {
-		            stop();
+					try
+					{
+						if ( confirmClose(batchTextArea, sourceTextArea, targetTextArea, chckbxmntmEditSource, mntmSaveSource) )
+						    stop();
+					}
+					catch (Exception ex)
+					{
+						notification(ex);
+					}
 		        }
 		    }
 		);
@@ -821,6 +830,10 @@ public class GraphicalUI extends Transformer implements Runnable
 					try
 					{
 						transformDebug(batchTextArea, sourceTextArea, targetTextArea);
+					}
+					catch (ScriptException se)
+					{
+						notification(MessageType.WARN, message(se));
 					}
 					catch (Exception ex)
 					{

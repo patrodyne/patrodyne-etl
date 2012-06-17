@@ -1,0 +1,118 @@
+TransformIO Modes
+
+	<TransformIO> has with three modes of execution:
+	
+	[[1]] Desktop Graphic User Interface (GUI).
+
+	[[2]] Terminal Text User Interface (TUI).
+
+	[[3]] Command Line Interface (CLI).
+
+	[]
+
+* {Graphical} User Interface (GUI)
+
+[images/Patrodyne-ETL-TransformIO-GUI.png] Patrodyne-ETL-TransformIO-GUI.png
+
+	The TransformIO GUI is the easiest way to create/edit a batch, view/edit
+	source data, view the target data or review the output log. The user
+	interface has four windows and menus:
+	
+	* batch - left window, an XML editor to create or edit configure a batch.
+	
+	* source - right top window to view or edit source data.
+	
+	* target - right bottom window to view target data.
+	
+	* console - bottom window to review the output log.
+	
+	[]
+	
+	The menu bar has seven drop-down menus:
+	
+	* File - Create a New batch. Open, Save or Close a current batch. Exit the
+	application.
+	
+	* Edit - Undo, Redo, Cut, Copy, Paste or set Preferences.
+	
+	* Transform - Debug or Run the current batch.
+	
+		* Debug - Executes the batch in-memory.
+		
+		* Run - Executes the batch and outputs to the target location.
+	
+	* Source - Wrap mode, Edit mode, Save, Refresh data.
+	
+	* Target - Wrap mode. Blank (clear) the target window.
+	
+	* Console - Wrap mode. Blank (clear) the console window. Display available
+	scripting engines.
+	
+	* Help - Online, Donate, (hot) Keys, About.
+	
+	[] 
+
+* {Textual} User Interface (TUI)
+
+[images/Patrodyne-ETL-TransformIO-TUI.png] Patrodyne-ETL-TransformIO-TUI.png
+
+	Often, {{{http://en.wikipedia.org/wiki/Headless_system}headless servers}} are
+	used for batch processing because they are streamlined, inexpensive and
+	reliable. Or, home users may use a terminal (ssh) to access their Network
+	Attached Storage (NAS) servers. In these cases, TransformIO's <Textual User
+	Interface> (TUI) is a convenient way to maintain TIO batches.
+	
+	The TUI uses {{{http://www.pitman.co.za/projects/charva/index.html}CHARVA}}
+	to display a full screen user interface when you are working in remote terminal.
+	
+	CHARVA is a Java framework for presenting a "graphical" user interface,
+	composed of elements such as windows, dialogs, menus, text fields and buttons,
+	on a traditional character-cell ASCII terminal.
+	
+	The CHARVA Java library is included with the TransformIO distribution <but the
+	CHARVA native library is not included>; fear not, it is easy to
+	build the native library for your system using the instructions on their 
+	{{{http://www.pitman.co.za/projects/charva/Download.html}download site}}.
+
+	When TransformIO is run in TUI mode but cannot find the CHARVA library you
+	will be instructed to build the native library, as follows:
+
++-----------------------------------------------------------------
+$ TransformIO.sh mode=tui
+
+no Terminal in java.library.path
+Please build 'CHARVA: A Java Windowing Toolkit for Text Terminals'
+from http://www.pitman.co.za/projects/charva/index.html
+and copy libTerminal.so or Terminal.dll to:
+lib/native
++-----------------------------------------------------------------
+
+	Note: The <<<lib/native>>> path is relative to your TransformIO installation
+	path. The default location is:
+
++---------------------------------------------------------------
+${HOME}/opt/Patrodyne/patrodyne-etl-TransformIO/#.#.#/lib/native
++---------------------------------------------------------------
+
+
+* {Command} Line Interface (CLI)
+
+	After you have configured a batch using the GUI or TUI, you can
+	run the batch from the command line. The CLI is the best way to
+	repeatedly run the same TIO batch. This is also the way you would
+	schedule batch jobs using CRON or any other scheduler.
+
++---------------------------------------------------------------------------
+$ TransformIO.sh mode=CLI egs/02ReverseLastAndFirstName/batch.tio 
+
+INFO  options: TransformIO 1.0.0-SNAPSHOT
+INFO  batch=egs/02ReverseLastAndFirstName/batch.tio
+INFO  mode=CLI
+INFO  Source: file:egs/02ReverseLastAndFirstName/input.txt
+INFO  Target: file:egs/02ReverseLastAndFirstName/output.txt
+INFO  Transform: START
+DEBUG Record: 1
+DEBUG Record: 2
+DEBUG Record: 3
+INFO  Transform: SUCCESS (3, 0.667 ms)
++---------------------------------------------------------------------------

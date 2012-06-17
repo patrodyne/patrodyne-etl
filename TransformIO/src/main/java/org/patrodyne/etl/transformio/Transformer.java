@@ -1062,6 +1062,7 @@ abstract public class Transformer
 		throws IOException
 	{
 		System.setOut(getConsolePrintStream());
+		System.setErr(getConsolePrintStream());
 		InputStreamReader isrOut = new InputStreamReader(getConsolePipedInputStream());
 		LineNumberReader lnrOut = new LineNumberReader(isrOut);
 		return lnrOut;
@@ -1073,11 +1074,27 @@ abstract public class Transformer
 	 */
 	protected static String message(Throwable ex)
 	{
-		StackTraceElement st = ex.getStackTrace()[0];
-		String error = ex.getClass().getSimpleName()
-			+": "+ex.getMessage()
-			+", "+st.getFileName()
-			+"@"+st.getLineNumber();
+		String error;
+		if ( ex instanceof ScriptException )
+		{
+			ScriptException se = (ScriptException) ex;
+			error = se.getClass().getSimpleName()
+				+": "+se.getMessage();
+			if ( se.getFileName() != null )
+				error += ", "+se.getFileName();
+			if ( se.getLineNumber() >= 0 )
+				error += "@("+se.getLineNumber()
+				+","+se.getColumnNumber()
+				+")";
+		}
+		else
+		{
+			StackTraceElement st = ex.getStackTrace()[0];
+			error = ex.getClass().getSimpleName()
+				+": "+ex.getMessage()
+				+", "+st.getFileName()
+				+"@"+st.getLineNumber();
+		}
 		return error;
 	}
 
@@ -1190,6 +1207,10 @@ abstract public class Transformer
 					sourceReader.close();
 			}
 		}
+		catch (ScriptException se)
+		{
+			notification(MessageType.ERROR, message(se));
+		}
 		catch (Exception e)
 		{
 			notification(e);
@@ -1260,8 +1281,8 @@ abstract public class Transformer
 			for (ScriptEngineFactory sef : engineFactories) 
 			{
 				StringBuilder sb = new StringBuilder("ScriptEngine = ");
-				sb.append(sef.getLanguageName()+" ");
-				sb.append(sef.getLanguageVersion());
+				sb.append(sef.getEngineName()+" ");
+				sb.append(sef.getEngineVersion());
 				String punc = ": ";
 				for ( String name : sef.getNames() )
 				{

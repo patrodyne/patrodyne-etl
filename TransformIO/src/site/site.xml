@@ -46,6 +46,32 @@
 				<item name="Status" href="index.html#Status">
 				</item>
 			</item>
+			<item name="Modes" href="Modes.html" collapse="true">
+				<item name="Graphical" href="Modes.html#Graphical"/>
+				<item name="Textual" href="Modes.html#Textual"/>
+				<item name="Command" href="Modes.html#Command"/>
+			</item>
+			<item name="Engines" href="Engines.html" collapse="true">
+				<item name="JavaScript" href="Engines.html#JavaScript"/>
+				<item name="JavaCode" href="Engines.html#JavaCode"/>
+				<item name="Jython" href="Engines.html#Jython"/>
+				<item name="Groovy" href="Engines.html#Groovy"/>
+				<item name="BeanShell" href="Engines.html#BeanShell"/>
+			</item>
+			<item name="Examples" href="Examples.html" collapse="true">
+				<item name="01SimpleCopy" href="Examples.html#01SimpleCopy"/>
+				<item name="02ReverseLastAndFirstName" href="Examples.html#02ReverseLastAndFirstName"/>
+				<item name="03FoodPrices" href="Examples.html#03FoodPrices"/>
+				<item name="04Calories" href="Examples.html#04Calories"/>
+				<item name="05RiversHash" href="Examples.html#05RiversHash"/>
+				<item name="06RiversFlat" href="Examples.html#06RiversFlat"/>
+				<item name="07RiversJava" href="Examples.html#07RiversJava"/>
+				<item name="08RiversBeanShell" href="Examples.html#08RiversBeanShell"/>
+				<item name="09RiversGroovy" href="Examples.html#09RiversGroovy"/>
+				<item name="10RiversJython" href="Examples.html#10RiversJython"/>
+				<item name="11AesopsFablesToPSV" href="Examples.html#11AesopsFablesToPSV"/>
+				<item name="12AesopsFablesToTXT" href="Examples.html#12AesopsFablesToTXT"/>
+			</item>
 			<item name="FAQ" href="faq.html"/>
 		</menu>
 

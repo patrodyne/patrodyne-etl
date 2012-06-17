@@ -1,0 +1,172 @@
+TransformIO Engines
+	
+	* <<JavaScript>> - A multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.
+
+	* <<Java>> - Compiles a Java source then invokes its main method.
+
+	* <<Jython>> - A Java implementation of Python. It is a general-purpose, high-level programming language with code readability.
+		
+	* <<Groovy>> - Builds upon the strengths of Java but has additional power features inspired by Python, Ruby and Smalltalk.
+
+	* <<Bean Shell>> - Executes Java syntax and extends it with common scripting conveniences.
+    
+* {JavaScript}: Scripting Engine for Web and Server Applications
+
+	The <Mozilla Rhino> engine for the <JavaScript> programming language is
+	currently included as a feature in the JDK/JRE 6 and 7 libraries.
+
++---------------------------------------
+    <transform>
+        <script engine="JavaScript">
+main();
+function main()
+{
+    target.put('F01',source.get('F02'));
+    target.put('F02',source.get('F01'));
+    return target;
+}
+        </script>
+    </transform>
++---------------------------------------	
+
+	This example uses <JavaScript> to swap fields <<<F01>>> and <<<F02>>>, any
+	other fields are auto-mapped. The <<<source>>> and <<<target>>> variables are
+	implemented as <<<java.util.Map\<String,String\>>>> objects where the key is
+	the field name and the value is the data value. <TransformIO> updates these
+	variables for each record. A third map <<<common>>>, not used in this example,
+	can be used to pass named <object> values across records.
+	
+	Note: The data value is always a String, as parsed, from the source record.
+	Type conversion is left to transform script which can better convert the value
+	to numbers, dates, etc. It is best to do casting in the transform where
+	exceptions can be handled with the power of the scripting language! For this
+	reason, <TransformIO> does not provide type specification in the source or
+	target records where field values are just strings.
+
+* {JavaCode}: Scripting Engine for the Java Language
+
+	To use <Java> as a scripting engine, download the JAR from
+	{{{http://patrodyne.org/sites/scripting-Java/index.html}Patrodyne Scripting
+	for Java}}, put it in <TransformIO>'s <<<lib/engine>>> directory and restart
+	<TransformIO>.
+
++---------------------------------------	
+    <transform>
+        <script engine="JavaCode">
+<![CDATA[
+import java.util.*;
+import javax.script.*;
+class Main
+{
+    private static ScriptContext ctx;
+    public static void setScriptContext(ScriptContext ctx) { Main.ctx = ctx; }
+    public static void main(String[] args)
+    {
+        Map<String,Object> common = (Map<String,Object>) ctx.getAttribute("common");
+        Map<String,String> source = (Map<String,String>) ctx.getAttribute("source");
+        Map<String,String> target = (Map<String,String>) ctx.getAttribute("target");
+        target.put("F01",source.get("F02"));
+        target.put("F02",source.get("F01"));
+    }    
+}
+]]>
+        </script>
+    </transform>
++---------------------------------------	
+
+	This example uses <Java> to swap two fields and auto-map any other fields;
+	otherwise, it is similar to the <JavaScript> example.
+	
+	For <Java>, the <<<ScriptContext>>> requires a setter to get the context
+	variables from <TransformIO>. Because the <<<main>>> method cannot return a
+	value, <TransformIO> retrieves the <<<target>>> object from the context
+	after each transformation.
+	
+	Note: This example wraps the script in <<<\<![CDATA[...]]\>>>> because the
+	code includes characters that must be hidden from XML. 
+
+* {Jython}: Scripting Engine for the Python 
+
+	To use <Jython> as a scripting engine, download the JAR from one of the following
+	links, put it in <TransformIO>'s <<<lib/engine>>> directory and restart
+	<TransformIO>.
+	
+	* {{{http://mirrors.ibiblio.org/pub/mirrors/maven2/org/python/jython/}Jython Archive}} (tested with 2.5.0)
+	
+	* {{{http://www.jython.org/downloads.html}Jython Downloads}}
+	
+	[]
+
++---------------------------------------	
+    <transform>
+        <script engine="jython">
+class Main:
+    def run(self):
+    main();
+        target.put('F01',source.get('F02'));
+        target.put('F02',source.get('F01'));
+Main().run()
+        </script>
+    </transform>
++---------------------------------------	
+
+	This example uses <Jython> to swap two fields and auto-map any other fields;
+	otherwise, it is similar to the <JavaScript> example.
+
+	Because the <<<main>>> method does not return a value, <TransformIO> retrieves
+	the <<<target>>> object from the context after each transformation.
+
+* {Groovy}: Scripting Engine 
+
+	To use <Groovy> as a scripting engine, download the JAR from one of the following
+	links, put it in <TransformIO>'s <<<lib/engine>>> directory and restart
+	<TransformIO>.
+	
+	* {{{http://mirrors.ibiblio.org/pub/mirrors/maven2/org/codehaus/groovy/groovy-all/}Groovy Archive}} (tested with 1.8.3)
+	
+	* {{{http://groovy.codehaus.org/Download}Groovy Downloads}}
+	
+	[]
+
++---------------------------------------
+    <transform>
+        <script engine="groovy">
+target.put('F01',source.get('F02'));
+target.put('F02',source.get('F01'));
+return target;
+        </script>
+    </transform>
++---------------------------------------	
+
+	This example uses <Groovy> to swap two fields and auto-map any other fields;
+	otherwise, it is similar to the <JavaScript> example.
+
+	Note: <<<'return target;'>>> is optional.
+
+* {BeanShell}: Scripting Engine 
+
+	To use <BeanShell> as a scripting engine, download the JAR from one of the following
+	links, put it in <TransformIO>'s <<<lib/engine>>> directory and restart
+	<TransformIO>.
+	
+	* {{{http://mirrors.ibiblio.org/pub/mirrors/maven2/org/beanshell/bsh/}BeanShell Archive}} (tested with 2.0b4)
+	
+	* {{{http://www.beanshell.org/download.html}BeanShell Downloads}}
+	
+	[]
+
++---------------------------------------
+    <transform>
+        <script engine="beanshell">
+target.put("F01",source.get("F02"));
+target.put("F02",source.get("F01"));
+return target;
+        </script>
+    </transform>
++---------------------------------------	
+
+	This example uses <BeanShell> to swap two fields and auto-map any other fields;
+	otherwise, it is similar to the <JavaScript> example.
+
+	Note: <<<'return target;'>>> is optional.
+

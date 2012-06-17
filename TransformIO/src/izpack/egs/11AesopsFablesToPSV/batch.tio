@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+	Transform a text file containing Aesop's Fables into a pipe delimited file
+	with two fields per record. The first field is the title and the second
+	field is the Base64 encoding of each compressed story.
+
+	The text file (source) specification is:
+	
+	1) A title line. 
+	2) A blank line.
+	3) A fable with optional single blank lines.
+	4) Two blank lines.
+	5) Lines end with carriage return and line feed.
+
+	The target file specification is:
+
+	1) Two fields delimited by pipes.
+	2) Records delimited by line feeds.
+
+	From http://www.textfiles.com/stories,
+	Aesop's Fables Translated by George Fyler Townsend 
+-->
+<batch xmlns="http://patrodyne.org/etl/TransformIO">
+
+	<source charset="UTF-8" bufferSize="4096">
+		<locator url="file:egs/11AesopsFablesToPSV/aesop11.txt"/>
+		<record>
+			<field name="Title" get="(?s)(.*)\r\n\s*\r\n" set="$1"/>
+			<field name="Fable" get="(?s)(.*)\r\n\s*\r\n\s*\r\n" set="$1"/>
+		</record>
+	</source>
+
+	<target charset="UTF-8">
+		<locator url="file:egs/11AesopsFablesToPSV/aesop11.psv"/>
+		<record>
+			<field name="Title" get="(.*)" set="$1|"/>
+			<field name="Quota" get="(.*)" set="$1|"/>
+			<field name="Fable" get="(.*)" set="$1\n"/>
+		</record>
+	</target>
+
+	<transform>
+		<script engine="JavaCode">
+<![CDATA[
+import java.io.*;
+import java.util.*;
+import java.util.zip.*;
+import javax.script.*;
+import sun.misc.*;
+class Main
+{
+	private static ScriptContext ctx;
+	public static void setScriptContext(ScriptContext ctx) { Main.ctx = ctx; }
+	public static void main(String[] args) throws IOException
+	{
+		Map<String,Object> common = (Map<String,Object>) ctx.getAttribute("common");
+		Map<String,String> source = (Map<String,String>) ctx.getAttribute("source");
+		Map<String,String> target = (Map<String,String>) ctx.getAttribute("target");
+		int recno = 1;
+		if ( common.containsKey("recno") )
+			recno = (Integer) common.get("recno") + 1;
+		common.put("recno", recno);
+		target.put("Title", source.get("Title").trim());
+		String fable1 = source.get("Fable");
+		String fable2 = compress(fable1);
+		Double quota = 100.0 * ((double) fable2.length() / (double) fable1.length());
+		target.put("Quota", quota.intValue()+"%");
+		target.put("Fable", fable2);
+	}
+	static String compress(String text) throws IOException
+	{
+		String compress = text;
+		if (text != null)
+		{
+			compress = text.trim();
+			if ( compress.length() > 0 )
+			{
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				GZIPOutputStream gzip = new GZIPOutputStream(bos);
+				gzip.write(compress.getBytes());
+				gzip.close();
+				BASE64Encoder encoder = new BASE64Encoder();
+				compress = encoder.encode(bos.toByteArray()).replace("\n","");
+			}
+		}
+		return compress;
+	}
+}
+]]>
+		</script>
+	</transform>
+
+</batch>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

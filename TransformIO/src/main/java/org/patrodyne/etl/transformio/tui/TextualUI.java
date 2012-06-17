@@ -18,6 +18,8 @@ import charvax.swing.border.*;
 
 import java.io.*;
 
+import javax.script.ScriptException;
+
 import org.patrodyne.etl.transformio.xml.Batch;
 import org.patrodyne.etl.transformio.xml.Locator;
 import org.patrodyne.etl.transformio.MessageType;
@@ -1191,6 +1193,10 @@ public class TextualUI extends Transformer implements Runnable
 		try
 		{
 			transformDebug(batchTextArea, sourceTextArea, targetTextArea);
+		}
+		catch (ScriptException se)
+		{
+			notification(MessageType.WARN, message(se));
 		}
 		catch (Exception ex)
 		{
