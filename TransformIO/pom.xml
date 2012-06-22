@@ -48,7 +48,7 @@
 
 	<licenses>
 		<license>
-			<name>LGPL v3</name>
+			<name>GNU Lesser General Public License</name>
 			<distribution>repo and manual</distribution>
 			<url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</url>
 		</license>
@@ -219,9 +219,8 @@
 										<report>summary</report>
 										<report>issue-tracking</report>
 										<report>scm</report>
-										<!-- Dependencies can be slow
+										<!-- Dependencies can be slow -->
 										<report>dependencies</report>
-										-->
 										<report>plugins</report>
 										<report>project-team</report>
 										<report>license</report>
