@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Use Java to read pipe delimited source, write fixed-length target. -->
 <batch xmlns="http://patrodyne.org/etl/TransformIO">
 	<source charset="UTF-8" bufferSize="256">
 		<locator url="file:egs/07RiversJavaCode/rivers.psv"/>

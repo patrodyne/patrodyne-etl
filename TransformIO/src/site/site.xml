@@ -42,10 +42,7 @@
 		</links>
 
 		<menu name="Overview">
-			<item name="Introduction" href="index.html" collapse="true">
-				<item name="Status" href="index.html#Status">
-				</item>
-			</item>
+			<item name="Introduction" href="index.html" collapse="false"/>
 			<item name="Modes" href="Modes.html" collapse="true">
 				<item name="Graphical" href="Modes.html#Graphical"/>
 				<item name="Textual" href="Modes.html#Textual"/>
@@ -81,12 +78,10 @@
 		</menu>
 		
 		<menu name="Download">
-			<item name="Pre-release" href="Patrodyne-ETL-TransformIO.jnlp"/>
-<!-- 
-			<item name="Artifacts" href="http://search.maven.org/#search|ga|1|a%3A%22patrodyne-etl-TransformIO%22"/>
--->
-			<item name="Tarball" href="https://github.com/patrodyne/patrodyne-etl/tarball/master"/>
-			<item name="Zipball" href="https://github.com/patrodyne/patrodyne-etl/zipball/master"/>
+			<item name="Release"	href="Patrodyne-ETL-TransformIO.jnlp"/>
+			<item name="Artifacts"	href="http://search.maven.org/#search|ga|1|a%3A%22patrodyne-etl-TransformIO%22"/>
+			<item name="Tarball"	href="https://github.com/patrodyne/patrodyne-etl/tarball/master"/>
+			<item name="Zipball"	href="https://github.com/patrodyne/patrodyne-etl/zipball/master"/>
 		</menu>
 		
 		<menu ref="reports"/>

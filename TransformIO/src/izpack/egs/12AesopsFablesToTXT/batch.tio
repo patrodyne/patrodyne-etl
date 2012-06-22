@@ -16,7 +16,7 @@
 	4) Two blank lines.
 	5) Lines end with carriage return and line feed.
 
-	From http://www.textfiles.com/stories,
+	Data from http://www.textfiles.com/stories,
 	Aesop's Fables Translated by George Fyler Townsend 
 -->
 <batch xmlns="http://patrodyne.org/etl/TransformIO">

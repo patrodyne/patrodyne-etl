@@ -17,7 +17,7 @@
 	1) Two fields delimited by pipes.
 	2) Records delimited by line feeds.
 
-	From http://www.textfiles.com/stories,
+	Data from http://www.textfiles.com/stories,
 	Aesop's Fables Translated by George Fyler Townsend 
 -->
 <batch xmlns="http://patrodyne.org/etl/TransformIO">

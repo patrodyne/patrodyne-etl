@@ -61,7 +61,29 @@ TransformIO Modes
 	reliable. Or, home users may use a terminal (ssh) to access their Network
 	Attached Storage (NAS) servers. In these cases, TransformIO's <Textual User
 	Interface> (TUI) is a convenient way to maintain TIO batches.
-	
+
+	To install TransformIO on a headless server, {{{https://oss.sonatype.org/content/groups/public/org/patrodyne/patrodyne-etl-TransformIO/}download}}
+	the installer to your server and run it in console mode:
+
++----------------------------------------------------------------------------
+java -jar patrodyne-etl-TransformIO-#.#.#-install.jar -console
+
+Welcome to the installation of TransformIO #.#.#!
+ - Patrodyne <rick.osullivan@patrodyne.org>
+The homepage is at: http://patrodyne.org/sites/etl-TransformIO
+press 1 to continue, 2 to quit, 3 to redisplay
+Select target path [~/opt/Patrodyne/patrodyne-etl-TransformIO/#.#.#] 
+press 1 to continue, 2 to quit, 3 to redisplay
+[ Starting to unpack ]
+[ Processing package: Core (1/3) ]
+[ Processing package: Logger (2/3) ]
+[ Processing package: Logback (3/3) ]
+[ Unpacking finished ]
+Install was successful
+application installed on ~/opt/Patrodyne/patrodyne-etl-TransformIO/#.#.#
+[ Console installation done ]
++----------------------------------------------------------------------------
+
 	The TUI uses {{{http://www.pitman.co.za/projects/charva/index.html}CHARVA}}
 	to display a full screen user interface when you are working in remote terminal.
 	

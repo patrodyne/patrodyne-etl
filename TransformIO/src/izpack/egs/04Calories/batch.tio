@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
-	From TeachITza - resource website for IT educators and learners in South Africa,
+	Data From TeachITza - resource website for IT educators and learners in South Africa,
+	Read comma separated values, write pipe delimited. Extract portion and grams.
 	http://www.teachitza.com/data/
 -->
 <batch xmlns="http://patrodyne.org/etl/TransformIO">

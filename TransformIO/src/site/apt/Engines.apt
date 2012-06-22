@@ -1,14 +1,14 @@
 TransformIO Engines
 	
-	* <<JavaScript>> - A multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.
+	* <<{{JavaScript}}>> - A multi-paradigm language, supporting object-oriented, imperative, and functional programming styles.
 
-	* <<Java>> - Compiles a Java source then invokes its main method.
+	* <<{{JavaCode}}>> - Compiles a Java source then invokes its main method.
 
-	* <<Jython>> - A Java implementation of Python. It is a general-purpose, high-level programming language with code readability.
+	* <<{{Jython}}>> - A Java implementation of Python. It is a general-purpose, high-level programming language with code readability.
 		
-	* <<Groovy>> - Builds upon the strengths of Java but has additional power features inspired by Python, Ruby and Smalltalk.
+	* <<{{Groovy}}>> - Builds upon the strengths of Java but has additional power features inspired by Python, Ruby and Smalltalk.
 
-	* <<Bean Shell>> - Executes Java syntax and extends it with common scripting conveniences.
+	* <<{{BeanShell}}>> - Executes Java syntax and extends it with common scripting conveniences.
     
 * {JavaScript}: Scripting Engine for Web and Server Applications
 

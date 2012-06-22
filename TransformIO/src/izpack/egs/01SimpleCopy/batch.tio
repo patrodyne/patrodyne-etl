@@ -7,7 +7,7 @@
 -->
 <batch xmlns="http://patrodyne.org/etl/TransformIO">
 
-	<source charset="UTF-8">
+	<source charset="UTF-8" bufferSize="256">
 		<locator url="file:egs/01SimpleCopy/input.txt"/>
 		<record>
 			<field name="F01" get="(.*)\n" set="$1"/>

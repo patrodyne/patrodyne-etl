@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Use JavaScript to read hash delimited source, write fixed-length target. -->
 <batch xmlns="http://patrodyne.org/etl/TransformIO">
 	<source charset="UTF-8" bufferSize="256">
-		<locator url="file:egs/05RiversHash/rivers.bsv"/>
+		<locator url="file:egs/05RiversHash/rivers.hsv"/>
 		<record exclude="\s*\n">
 			<field name="Rank" get="(.*)#" set="$1"/>
 			<field name="River" get="(.*)#" set="$1"/>

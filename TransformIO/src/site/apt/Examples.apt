@@ -1,3 +1,492 @@
 TransformIO Examples
 
-	To be determined...
+	* <<{{01SimpleCopy}}>> - Copy records without transformation.
+
+	* <<{{02ReverseLastAndFirstName}}>> - Reverse field positions.
+
+	* <<{{03FoodPrices}}>> - Tabs in, pipes out and calculate price changes.
+
+	* <<{{04Calories}}>> - Read comma separated values, write pipe delimited. Extract portion and grams.
+
+	* <<{{05RiversHash}}>> - Use JavaScript to read hash delimited source, write fixed-length target.
+
+	* <<{{06RiversFlat}}>> - Use JavaScript to read fixed length source, write pipe delimited target.
+
+	* <<{{07RiversJavaCode}}>> - Use Java to read hash delimited source, write fixed-length target.
+
+	* <<{{08RiversBeanShell}}>> - Use BeanShell to read hash delimited source, write fixed-length target.
+
+	* <<{{09RiversGroovy}}>> - Use Groovy to read hash delimited source, write fixed-length target.
+
+	* <<{{10RiversJython}}>> - Use Jython to read hash delimited source, write fixed-length target.
+
+	* <<{{11AesopsFablesToPSV}}>> - Transform multi-line text to pipe delimited records.
+
+	* <<{{12AesopsFablesToTXT}}>> - Transform pipe delimited records to multi-line text.
+
+	[]
+
+* {01SimpleCopy}: Copy records without transformation.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/01SimpleCopy}01SimpleCopy}}
+
+	As a simple copy, this is a trivial example. It serves to demonstrate the
+	essential features of a batch configuration. There are three elements to a TIO
+	batch:
+	
+	[[1]] <<<source>>> - specifies the input fields.
+	
+	[[2]] <<<target>>> - specifies the output fields.
+	
+	[[3]] <<<transform>>> - an optional script to perform custom transformations.
+	
+	[]
+
+	Let's look closely at the example:
+
++--------------------------------------------
+<source charset="UTF-8">
+    <locator url="file:egs/01SimpleCopy/input.txt"/>
+    <record>
+        <field name="F01" get="(.*)\n" set="$1"/>
+    </record>
+</source>
++--------------------------------------------
+
+	The default character encoding, <<<charset>>> is an optional (but recommended)
+	attribute. If omitted then the system encoding becomes the default. If the
+	source starts with a Byte Order Mark (BOM) then it overrides the default
+	encoding. A BOM is an invisible Unicode character that may occurs as the first
+	few bytes of a file and indicates which of the several Unicode representations
+	is used to encode the text. When in doubt, use <<<charset="UTF-8">>>.
+	
+	The <<<bufferSize>>> attribute specifies the estimated length of the longest
+	field in your record. It is an optional attribute where the default is 256
+	characters.
+	
+	The <<<url>>> attribute  of the <<<locator>>> element specifies the location
+	of the source data.
+	
+	The <<<record>>> element contains one or more <<<field>>> specifications where
+	each <<<field>>> elements has these attributes:
+	
+	* <<<name>>> - used by the <<<target>>> fields and/or <<<transform>>> script
+	to reference this source field.
+
+	* <<<get>>> - a regular expression used to parse the source stream. 
+
+	* <<<set>>> - a <replacement> pattern with a reference to regex groups from the getter. 
+
+	[]
+
+	The <<<get>>> and <<<set>>> attributes are the heart of a TransformIO
+	configuration. 
+	
++--------------------------------------------
+<field name="F01" get="(.*)\n" set="$1"/>
++--------------------------------------------
+
+	The <getter> uses parenthesis to specify a group. In regular expressions,
+	groups are assigned positional identifiers: 1,2,3, ... The <setter> refers to
+	this group using <<<$1>>> to specify the first group in the <getter>. The dot
+	<<<'.'>>> is the regex wild card character. It matches any single character
+	other than the newline character. The asterisk <<<'*'>>> repeats the previous
+	character, zero to many times. The <<<'\n'>>> sequence matches the newline
+	character.
+	
+	Thus, this field specification groups all characters up to a newline character
+	and sets the value to group #1. Or more simply, each record is parsed as a
+	single field.
+
+	Next, looking at the <<<target>>> element, we see a <getter> to group all
+	characters from the field named <<<F01>>> and a <setter> to output the
+	group plus a newline character.
+
++--------------------------------------------
+<target charset="UTF-8">
+    <locator url="file:egs/01SimpleCopy/output.txt"/>
+    <record>
+        <field name="F01" get="(.*)" set="$1\n"/>
+    </record>
+</target>
++--------------------------------------------
+
+	But this example includes a <transform> element. Transformations are executed
+	after parsing the source and prior to outputting the target. Transformations
+	are optional.
+
++---------------------------------------
+<transform>
+    <script engine="JavaScript">
+
+main();
+function main()
+{
+    target.put('F01',source.get('F01'));
+    return target;
+}
+
+    </script>
+</transform>
++---------------------------------------
+	
+	This example uses <<<JavaScript>>> to copy the source value to the target
+	value but other examples, below, will do more.
+
+* {02ReverseLastAndFirstName}: Reverse field positions.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/02ReverseLastAndFirstName}02ReverseLastAndFirstName}}
+
+	Reverse last name and first name ordering.
+	
+	[[1]] Extract comma separated records containing a last and first name.
+	
+	[[2]] Load pipe separated records with the reverse field order.
+
+	[]
+	
++----------------------------------------------------------------
+<source charset="UTF-8">
+    <locator url="file:egs/02ReverseLastAndFirstName/input.txt"/>
+    <record>
+        <field name="F01" get="(.*)," set="$1"/>
+        <field name="F02" get=" *(.*)\n" set="$1"/>
+    </record>
+</source>
++----------------------------------------------------------------
+
+	The source defines two fields. The first field groups all characters before
+	finding a comma. The second field skips leading spaces before grouping
+	characters prior to the newline character.
+	
++-----------------------------------------------------------------
+<target charset="UTF-8">
+    <locator url="file:egs/02ReverseLastAndFirstName/output.txt"/>
+    <record>
+        <field name="F02" get="(.*)" set="$1|"/>
+        <field name="F01" get="(.*)" set="$1\n"/>
+    </record>
+</target>
++-----------------------------------------------------------------
+
+	The target reverses the field order and separates the second field from the
+	first field with a pipe.
+	
+* {03FoodPrices}: Tabs in, pipes out and calculate price changes.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/03FoodPrices}03FoodPrices}}
+
+	Transform a tab separated list of food prices into a pipe separated list and
+	add calculated price changes.
+
+	The source data has a header line and four fields: Item, Quantity, '2012
+	Price', '2010 Price'. The record contains tab separated fields.
+	
+	The target adds several calculated fields: record number, unit prices and
+	change amounts.
+	
+	The fields are calculated in the <<<transform>>> element using the built-in
+	<JavaScript> engine.
+	
+	To calculate the record number, the <<<transform>>> script uses the
+	<<<common>>> context provided by <TransformIO>. 
+	
++-------------------------------------------
+var recno = Number(common.get('recno')) + 1;
+common.put('recno', recno);
+target.put('recno', recno.toFixed(0));
++-------------------------------------------
+
+	The <<<common>>> context is a map of named objects with a scope available to
+	all records.
+	
+	In this example, the value named <<<recno>>> is retrieved and converted to a
+	<<<Number>>> before incrementing it by one. <JavaScript> is kind enough to
+	convert the initial <<<null>>> value to <<<0>>>. The new value is stored back
+	into the <<<common>>> context for the next record then it is put into the
+	<<<target>>> map to be included in the <<<target>>> fields.
+	
+	The <<<recno>>> is used to separate the header logic from the data logic. In the
+	data logic:
+	
+	* The <<<QtyAndUnit>>> field is split into two fields.
+	
+	* Unit prices are calculated.
+	
+	* Change amount and percentage is calculated.
+	
+	[]
+
+* {04Calories}: Read comma separated values, write pipe delimited. Extract portion and grams.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/04Calories}04Calories}}
+
+	Some comma delimited fields are enclosed with quotes to protect embedded
+	commas. Some <<<item>>> fields of the food calories list have embedded commas
+	and are quoted:
+	
++--------------------------------------------
+"Potatoes, Boiled in Salted Water ",100g ,53,
+"Cherries, Black",100g ,51,
+"Broccoli, Green ",100g ,33, 
+"Melon, Average ",100g ,24, 
+"Mushrooms, Common ",100g ,13, 
++--------------------------------------------
+
+	A regular expression that can <optionally> parse quoted fields is:
+
++----------------------------------------------------
+<field name="Item" get='("*)([^"]*)\1\s*,' set="$2"/>
++----------------------------------------------------
+
+	The first group of the <getter> looks for zero or one (could be more) quotes.
+	The second group collects all non-quote characters, the field contents. The
+	next part is the interesting part, <<<\\1>>> repeats the first group. If the
+	first group is a quote then the pattern will require a quote after the field
+	contents; otherwise, no quote at the start is paired with no quote at the end!
+	The <getter> concludes with <<<\s*,>>> to match any white space characters
+	followed by a comma. Note: The <setter> refers to the second group to assign
+	the field contents to the field name.
+
+* {05RiversHash}: Use JavaScript to read hash delimited source, write fixed-length target.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/05RiversHash}05RiversHash}}
+
+	Featured, in this example, is the use of a <JavaScript> function to build a
+	fixed width <box> around a given field.
+
++----------------------------------------------------------
+function box(field,width,padding,mode)
+{
+    var box = "";
+    if ( width > 0 )
+    {
+        box = field.substr(0, width);
+        var padSize = width - box.length;
+        if ( padSize > 0 )
+        {
+            var pad = (new Array(padSize+1)).join(padding);
+            if ( "LEFT".equalsIgnoreCase(mode) )
+                box = pad.concat(box);
+            else
+                box = box.concat(pad);
+        }
+    }
+    return box;
+}
++----------------------------------------------------------
+
+* {06RiversFlat}: Use JavaScript to read fixed length source, write pipe delimited target.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/06RiversFlat}06RiversFlat}}
+
+	It's easy to parse fixed length fields. 
+	
++----------------------------------------------------------
+<source charset="UTF-8" bufferSize="256">
+    <locator url="file:egs/06RiversFlat/rivers.txt"/>
+    <record>
+        <field name="Rank" get="(.{4})" set="$1"/>
+        <field name="River" get="(.{30})" set="$1"/>
+        <field name="Source" get="(.{70})" set="$1"/>
+        <field name="Mouth" get="(.{20})" set="$1"/>
+        <field name="Miles" get="(.{5})" set="$1"/>
+        <field name="Kilometer" get="(.{5})\n" set="$1"/>
+    </record>
+</source>
++----------------------------------------------------------
+
+* {07RiversJavaCode}: Use Java to read hash delimited source, write fixed-length target.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/07RiversJavaCode}07RiversJavaCode}}
+
+	A <Java> method is used to build a fixed width <box> around a given field.
+
++----------------------------------------------------------
+static String box(String field, int width, char padding, Mode mode)
+{
+    String box = field;
+    if ( width <= field.length() )
+        box = field.substring(0, width);
+    else
+    {
+        StringBuilder pad = new StringBuilder();
+        for (int p=field.length(); p < width; ++p) 
+            pad.append(padding);
+        switch ( mode )
+        {
+            case LEFT: box = pad + field; break;
+            case RIGHT: box = field + pad; break;
+        }
+    }
+    return box;
+}
++----------------------------------------------------------
+
+
+* {08RiversBeanShell}: Use BeanShell to read hash delimited source, write fixed-length target.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/08RiversBeanShell}08RiversBeanShell}}
+
+	A <BeanShell> method to build a fixed width <box> around a given field.
+
++----------------------------------------------------------
+String box(String field, int width, char padding, char mode)
+{
+    String box = field;
+    if ( width <= field.length() )
+        box = field.substring(0, width);
+    else
+    {
+        StringBuilder pad = new StringBuilder();
+        for (int p=field.length(); p < width; ++p) 
+            pad.append(padding);
+        switch ( mode )
+        {
+            case LEFT: box = pad + field; break;
+            case RIGHT: box = field + pad; break;
+        }
+    }
+    return box;
+} 
++----------------------------------------------------------
+
+* {09RiversGroovy}: Use Groovy to read hash delimited source, write fixed-length target.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/09RiversGroovy}09RiversGroovy}}
+
+	A <Groovy> method to build a fixed width <box> around a given field.
+
++----------------------------------------------------------
+String box(String field, int width, String padding, Mode mode)
+{
+    String box = field;
+    if ( width <= field.length() )
+        box = field.substring(0, width);
+    else
+    {
+        StringBuilder pad = new StringBuilder();
+        for (int p=field.length(); p < width; ++p) 
+            pad.append(padding);
+        switch ( mode )
+        {
+            case Mode.LEFT: box = pad + field; break;
+            case Mode.RIGHT: box = field + pad; break;
+        }
+    }
+    return box;
+} 
++----------------------------------------------------------
+
+* {10RiversJython}: Use Jython to read hash delimited source, write fixed-length target.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/10RiversJython}10RiversJython}}
+
+	A <Jython> method to build a fixed width <box> around a given field.
+
++----------------------------------------------------------
+def box(field, width, padding, mode):
+    box = field[:width]
+    if ( mode == Mode.LEFT):
+        box = box.rjust(width, padding)
+    elif ( mode == Mode.RIGHT ):
+        box = box.ljust(width, padding)
+    return box
++----------------------------------------------------------
+
+* {11AesopsFablesToPSV}: Transform multi-line text to pipe delimited records.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/11AesopsFablesToPSV}11AesopsFablesToPSV}}
+
+	Transform a text file containing Aesop's Fables into a pipe delimited file
+	with two fields per record. The first field is the title and the second
+	field is the Base64 encoding of each compressed story.
+
+	The source for this example is quite different from a typical data file. It is
+	a tall text file with many sections. Each section is a title and story
+	separated by double line breaks. Within every section there is a title
+	followed by a line break and a story (fable).
+
+	The source is parsed using the <dotall> inline modifier <<<(?s)>>>. This
+	modifier changes the behavior of the <dot> pattern to also match <<<\r>>> and
+	<<<\n>>>.
+
++----------------------------------------------------------
+<source charset="UTF-8" bufferSize="4096">
+    <locator url="file:egs/11AesopsFablesToPSV/aesop11.txt"/>
+    <record>
+        <field name="Title" get="(?s)(.*)\r\n\s*\r\n" set="$1"/>
+        <field name="Fable" get="(?s)(.*)\r\n\s*\r\n\s*\r\n" set="$1"/>
+    </record>
+</source>
++----------------------------------------------------------
+
+	The <<<Title>>> is a single line which is fine for the first field of the
+	<<<target>>> field but the <<<Fable>>> needs work before it can be used as a
+	<<<target>>> field.
+	
+	The <<<transform>>> script compresses the <<<Fable>>> then encodes the bytes
+	using Base64.
+
++----------------------------------------------------------
+static String compress(String text) throws IOException
+{
+    String compress = text;
+    if (text != null)
+    {
+        compress = text.trim();
+        if ( compress.length() > 0 )
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            GZIPOutputStream gzip = new GZIPOutputStream(bos);
+            gzip.write(compress.getBytes());
+            gzip.close();
+            BASE64Encoder encoder = new BASE64Encoder();
+            compress = encoder.encode(bos.toByteArray()).replace("\n","");
+        }
+    }
+    return compress;
+}
++----------------------------------------------------------
+
+* {12AesopsFablesToTXT}: Transform pipe delimited records to multi-line text.
+
+	Example: {{{https://github.com/patrodyne/patrodyne-etl/tree/master/TransformIO/src/izpack/egs/12AesopsFablesToTXT}12AesopsFablesToTXT}}
+
+	Transform a data file of pipe delimited records into a text file. Each record
+	contains three fields: <<<Title>>>, <<<Quota>>> and <<<Fable>>>. The
+	<<<Fable>>> field is interesting because it is an encoding of compressed bytes.
+	The encoding and compression algorithms are Base64 and GZip, respectively. The
+	<<<Quota>>> field provides information about the efficiency of the compression
+	and is omitted from the target file.
+	
+	The <JavaCode> scripting engine to handle the decoding and decompression.
+	Here's the method:
+
++----------------------------------------------------------
+static String decompress(String text) throws IOException
+{
+    String decompress = text;
+    if (text != null)
+    {
+        decompress = text.trim();
+        if ( decompress.length() > 0 )
+        {
+            BASE64Decoder decoder = new BASE64Decoder();
+            byte[] decoded = decoder.decodeBuffer(decompress);
+            ByteArrayInputStream bis = new ByteArrayInputStream(decoded);
+            GZIPInputStream gzis = new GZIPInputStream(bis);
+            InputStreamReader reader = new InputStreamReader(gzis, "UTF-8");
+            StringWriter writer = new StringWriter();
+            int ch;
+            while ( (ch = reader.read()) != -1 )
+                writer.write(ch);
+            writer.close();
+            reader.close();
+            decompress = writer.toString();
+        }
+    }
+    return decompress;
+}
++----------------------------------------------------------
+	
