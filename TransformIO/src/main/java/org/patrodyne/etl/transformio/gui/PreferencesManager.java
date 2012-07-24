@@ -406,7 +406,7 @@ public class PreferencesManager
 		txtrFontSample.setLineWrap(true);
 		txtrFontSample.setEditable(false);
 		txtrFontSample.setText(FONT_SAMPLE_TEXT);
-		final JComboBox listLookAndFeel = new JComboBox(getLookAndFeelList());
+		final JComboBox<LookAndFeelItem> listLookAndFeel = new JComboBox<LookAndFeelItem>(getLookAndFeelList());
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.LINE_AXIS));
 		{
 			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -599,7 +599,7 @@ public class PreferencesManager
 							JScrollPane fontFamilyScrollPane = new JScrollPane();
 							fontFamilySelectorPanel.add(fontFamilyScrollPane);
 							{
-								final JList fontFamilyList = new JList(getFontFamilyNames());
+								final JList<String> fontFamilyList = new JList<String>(getFontFamilyNames());
 								fontFamilyScrollPane.setViewportView(fontFamilyList);
 								fontFamilyList.setSelectedValue(txtfldFontFamily.getText(), true);
 								fontFamilyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -632,7 +632,7 @@ public class PreferencesManager
 							JScrollPane fontSizeScrollPane = new JScrollPane();
 							fontSizeSelectorPanel.add(fontSizeScrollPane);
 							{
-								final JList fontSizeList = new JList(FONT_SIZE_LIST);
+								final JList<String> fontSizeList = new JList<String>(FONT_SIZE_LIST);
 								fontSizeScrollPane.setViewportView(fontSizeList);
 								fontSizeList.setSelectedValue(txtfldFontSize.getText(), true);
 								fontSizeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -665,7 +665,7 @@ public class PreferencesManager
 							JScrollPane fontStyleScrollPane = new JScrollPane();
 							fontStyleSelectorPanel.add(fontStyleScrollPane);
 							{
-								final JList fontStyleList = new JList(FONT_STYLE_LIST);
+								final JList<String> fontStyleList = new JList<String>(FONT_STYLE_LIST);
 								fontStyleScrollPane.setViewportView(fontStyleList);
 								fontStyleList.setSelectedValue(txtfldFontStyle.getText(), true);
 								fontStyleList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

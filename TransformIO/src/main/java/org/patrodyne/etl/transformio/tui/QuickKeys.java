@@ -23,8 +23,6 @@ import charvax.swing.JTable;
 public class QuickKeys
 	extends JDialog
 {
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Create the dialog.
 	 */

@@ -28,8 +28,6 @@ import charvax.swing.border.*;
 public class PreferencesManager
 	extends JDialog
 {
-	/** Represents serialVersionUID. */
-	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private static final int DEFAULT_CONSOLE_HISTORY_SIZE = 100;
 
