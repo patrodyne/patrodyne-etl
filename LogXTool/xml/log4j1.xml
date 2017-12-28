@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+	A configuration element consists of optional renderer
+	elements, appender elements, categories and an optional root
+	element. See http://logging.apache.org/log4j/1.2/manual.html.
+	HINT: Add this JVM definition to specify the location of this file.
+	      -Dlog4j.configuration="file://path/log4j.xml" (absolute)
+	      -Dlog4j.configuration="file:path/log4j.xml"   (relative)
+-->
+<configuration
+	xmlns="http://logging.apache.org/log4j/1.0/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://logging.apache.org/log4j/1.0/config log4j1.xsd">
+
+	<appender name="SOCKET" class="org.apache.log4j.net.SocketHubAppender">
+		<param name="AdvertiseViaMulticastDNS" value="false"/>
+		<param name="Application" value="EAI Connect0"/>
+		<param name="BufferSize" value="512"/>
+		<param name="LocationInfo" value="false"/>
+		<param name="Port" value="4560"/>
+		<param name="Threshold" value="TRACE"/>
+	</appender>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Encoding" value="UTF-8"/>
+        <param name="Threshold" value="DEBUG"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %-5p [%c{1}]\t%m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="CATALINA" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/catalina.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <param name="Append" value="true"/>
+		<param name="MaxFileSize" value="1GB"/>
+		<param name="MaxBackupIndex" value="9"/>
+		<param name="Threshold" value="TRACE"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p {%t}\t[%c]\t%m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="LOCALHOST" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/localhost.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <param name="Append" value="true"/>
+		<param name="MaxFileSize" value="1GB"/>
+		<param name="MaxBackupIndex" value="1"/>
+		<param name="Threshold" value="INFO"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p {%t}\t[%c]\t%m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="HOST-MANAGER" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/host-manager.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <param name="Append" value="true"/>
+		<param name="MaxFileSize" value="1GB"/>
+		<param name="MaxBackupIndex" value="1"/>
+		<param name="Threshold" value="INFO"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p {%t}\t[%c]\t%m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="MANAGER" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/manager.log"/>
+        <param name="Encoding" value="UTF-8"/>
+        <param name="Append" value="true"/>
+		<param name="MaxFileSize" value="1GB"/>
+		<param name="MaxBackupIndex" value="1"/>
+		<param name="Threshold" value="INFO"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p {%t}\t[%c]\t%m%n"/>
+        </layout>
+    </appender>
+
+	<logger name="java">	<level value="INFO"/>	</logger>
+	<logger name="javax">	<level value="INFO"/>	</logger>
+	<logger name="com">		<level value="INFO"/>	</logger>
+	<logger name="edu">		<level value="INFO"/>	</logger>
+	<logger name="net">		<level value="INFO"/>	</logger>
+	<logger name="org">		<level value="INFO"/>	</logger>
+	<logger name="sun">		<level value="INFO"/>	</logger>
+
+	<logger name="io">									<level value="WARN"/>	</logger>
+	<logger name="io.hawt.system">						<level value="WARN"/>	</logger>
+	<logger name="io.hawt.web">							<level value="WARN"/>	</logger>
+	<logger name="io.hawt.web.AuthenticationFilter">	<level value="WARN"/>  </logger>
+
+	<!-- PATRODYNE -->
+	<logger name="org.patrodyne">     <level value="INFO"/>   </logger>
+	<!-- PATRODYNE -->
+
+	<logger name="com.sun.xml.bind">		<level value="INFO"/>	</logger>
+	<logger name="javax.xml.bind">			<level value="INFO"/>	</logger>
+	<logger name="uk.co.jemos.podam.api">	<level value="ERROR"/>  </logger>
+
+	<!-- WatcherSpringContext Unexpected Refresh -->
+	<logger name="io.fabric8.watcher">				<level value="INFO"/>	</logger>
+	<logger name="io.hawt.system.ConfigManager">	<level value="INFO"/>	</logger>
+	<logger name="org.springframework.context ">	<level value="INFO"/>	</logger>
+	<!-- WatcherSpringContext Unexpected Refresh -->
+
+	<logger name="httpclient.wire">                 <level value="INFO"/>   </logger>
+	<logger name="org.jboss.weld.Conversation">     <level value="ERROR"/>  </logger>
+	<logger name="com.googlecode.psiprobe">         <level value="WARN"/>   </logger>
+	<logger name="com.googlecode.psiprobe.beans">   <level value="FATAL"/>  </logger>
+	<logger name="org.apache.activemq">				<level value="INFO"/>	</logger>
+	<logger name="org.apache.camel.component.file.remote">  <level value="WARN"/>  </logger>
+
+    <!-- Web Framework -->
+    <logger name="org.apache.tomcat">                   <level value="INFO"/> </logger>
+    <logger name="org.apache.catalina">                 <level value="INFO"/> </logger>
+    <logger name="org.apache.catalina.authenticator">   <level value="DEBUG"/> </logger>
+    <logger name="org.apache.wicket">                   <level value="INFO"/> </logger>
+    <logger name="org.wicketstuff">                     <level value="INFO"/> </logger>
+
+	<!-- FULL TRACE -->
+	<!--
+	<logger name="com">		<level value="TRACE"/>	</logger>
+	<logger name="org">		<level value="TRACE"/>	</logger>
+	-->
+	<!-- FULL TRACE -->
+
+    <logger name="org.apache.catalina.core.ContainerBase.[Catalina].[localhost]" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="LOCALHOST"/>
+    </logger>
+
+    <logger name="org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager]" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="HOST-MANAGER"/>
+    </logger>
+
+    <logger name="org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager]" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="MANAGER"/>
+    </logger>
+
+    <root>
+        <level value="TRACE"/>
+        <appender-ref ref="CATALINA"/>
+        <appender-ref ref="SOCKET"/>
+    </root>
+
+</configuration>
+<!-- vi:set tabstop=4 hardtabs=4 shiftwidth=4: -->

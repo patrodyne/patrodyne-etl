@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema	elementFormDefault="qualified"
+	xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://logging.apache.org/log4j/1.0/config"
+	targetNamespace="http://logging.apache.org/log4j/1.0/config"
+>
+
+	<element name='configuration'>
+		<complexType>
+			<sequence>
+				<element ref='tns:renderer' minOccurs='0' maxOccurs='unbounded'/>
+				<element ref='tns:appender' minOccurs='0' maxOccurs='unbounded'/>
+				<choice minOccurs='0' maxOccurs='unbounded'>
+					<element ref='tns:category'/>
+					<element ref='tns:logger'/>
+				</choice>
+				<element ref='tns:root' minOccurs='0' maxOccurs='1'/>
+				<element ref='tns:categoryFactory' minOccurs='0' maxOccurs='1'/>
+			</sequence>
+			<attribute name='log4j' type='string' use='optional' default='http://jakarta.apache.org/log4j/'/>
+			<attribute name='threshold' use='optional' default='null'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='all'/>
+						<enumeration value='debug'/>
+						<enumeration value='info'/>
+						<enumeration value='warn'/>
+						<enumeration value='error'/>
+						<enumeration value='fatal'/>
+						<enumeration value='off'/>
+						<enumeration value='null'/>
+					</restriction>
+				</simpleType>
+			</attribute>
+			<attribute name='debug' use='optional' default='null'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='true'/>
+						<enumeration value='false'/>
+						<enumeration value='null'/>
+					</restriction>
+				</simpleType>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name='renderer'>
+		<complexType>
+			<attribute name='renderedClass' type='string' use='required'/>
+			<attribute name='renderingClass' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='appender'>
+		<complexType>
+			<sequence>
+				<element ref='tns:errorHandler' minOccurs='0' maxOccurs='1'/>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+				<element ref='tns:layout' minOccurs='0' maxOccurs='1'/>
+				<element ref='tns:filter' minOccurs='0' maxOccurs='unbounded'/>
+				<element ref='tns:appender-ref' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='name' type='ID' use='required'/>
+			<attribute name='class' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='layout'>
+		<complexType>
+			<sequence>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='class' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='filter'>
+		<complexType>
+			<sequence>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='class' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='errorHandler'>
+		<complexType>
+			<sequence>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+				<element ref='tns:root-ref' minOccurs='0' maxOccurs='1'/>
+				<element ref='tns:logger-ref' minOccurs='0' maxOccurs='unbounded'/>
+				<element ref='tns:appender-ref' minOccurs='0' maxOccurs='1'/>
+			</sequence>
+			<attribute name='class' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='root-ref'>
+		<complexType/>
+	</element>
+
+	<element name='logger-ref'>
+		<complexType>
+			<attribute name='ref' type='IDREF' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='param'>
+		<complexType>
+			<attribute name='name' type='string' use='required'/>
+			<attribute name='value' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='priority'>
+		<complexType>
+			<sequence>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='class' type='string' use='optional'/>
+			<attribute name='value' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='level'>
+		<complexType>
+			<sequence>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='class' type='string' use='optional'/>
+			<attribute name='value' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='category'>
+		<complexType>
+			<sequence>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+				<choice minOccurs='0' maxOccurs='1'>
+					<element ref='tns:priority'/>
+					<element ref='tns:level'/>
+				</choice>
+				<element ref='tns:appender-ref' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='class' type='string' use='optional'/>
+			<attribute name='name' type='string' use='required'/>
+			<attribute name='additivity' use='optional' default='true'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='true'/>
+						<enumeration value='false'/>
+					</restriction>
+				</simpleType>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name='logger'>
+		<complexType>
+			<sequence>
+				<element ref='tns:level' minOccurs='0' maxOccurs='1'/>
+				<element ref='tns:appender-ref' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='name' type='string' use='required'/>
+			<attribute name='additivity' use='optional' default='true'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='true'/>
+						<enumeration value='false'/>
+					</restriction>
+				</simpleType>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name='categoryFactory'>
+		<complexType>
+			<sequence>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='class' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='appender-ref'>
+		<complexType>
+			<attribute name='ref' type='IDREF' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='root'>
+		<complexType>
+			<sequence>
+				<element ref='tns:param' minOccurs='0' maxOccurs='unbounded'/>
+				<choice minOccurs='0' maxOccurs='1'>
+					<element ref='tns:priority'/>
+					<element ref='tns:level'/>
+				</choice>
+				<element ref='tns:appender-ref' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name='eventSet'>
+		<complexType>
+			<sequence>
+				<element ref='tns:event'/>
+			</sequence>
+			<attribute name='log4j' type='string' use='optional' default='http://jakarta.apache.org/log4j/'/>
+			<attribute name='version' use='optional' default='1.2'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='1.1'/>
+						<enumeration value='1.2'/>
+					</restriction>
+				</simpleType>
+			</attribute>
+			<attribute name='includesLocationInfo' use='optional' default='true'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='true'/>
+						<enumeration value='false'/>
+					</restriction>
+				</simpleType>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name='event'>
+		<complexType>
+			<sequence>
+				<choice minOccurs='0' maxOccurs='1'>
+					<element ref='tns:message'/>
+					<element ref='tns:NDC'/>
+					<element ref='tns:throwable'/>
+					<element ref='tns:locationInfo'/>
+				</choice>
+			</sequence>
+			<attribute name='logger' type='string' use='required'/>
+			<attribute name='level' type='string' use='required'/>
+			<attribute name='thread' type='string' use='required'/>
+			<attribute name='timestamp' type='string' use='required'/>
+		</complexType>
+	</element>
+
+	<element name='message'>
+		<complexType mixed='true'>
+		</complexType>
+	</element>
+
+	<element name='NDC'>
+		<complexType mixed='true'>
+		</complexType>
+	</element>
+
+	<element name='throwable'>
+		<complexType mixed='true'>
+		</complexType>
+	</element>
+
+	<element name='locationInfo'>
+		<complexType>
+			<attribute name='class' type='string' use='required'/>
+			<attribute name='method' type='string' use='required'/>
+			<attribute name='file' type='string' use='required'/>
+			<attribute name='line' type='string' use='required'/>
+		</complexType>
+	</element>
+</schema>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bindings>
+<jaxb:bindings 
+	xmlns="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:inh="http://jaxb2-commons.dev.java.net/basic/inheritance"
+	extensionBindingPrefixes="inh"
+  	version="2.1"
+>
+
+	<!--  Global Bindings -->
+	<jaxb:bindings>
+
+		<!--
+			Microsoft WCF service WSDL generated from a programming language such as C#
+			using DataContractSerializer may contain XML Schema constructs which result in
+			JAXBElement<T> in generated code. A JAXBElement<T> type can also sometimes be
+			generated when a WSDL contains advanced XML schema features such as
+			substitution groups or elements that are BOTH OPTIONAL AND NILLABLE. In all
+			such cases, JAXBElement<T> provides round-trip support of values in XML
+			instances. However, JAXBElement<T> is not natural to a Java developer. So the
+			generateElementProperty customization can be used to generate an alternate
+			developer friendly but lossy binding. The different bindings along with the
+			trade-offs are discussed below.
+	
+			See http://docs.oracle.com/cd/E19159-01/820-1072/ahiid/index.html
+	
+			When processing a WCF service WSDL, it is recommended that the
+			generateElementProperty customization be set to 'false' in globalBindings.
+		-->
+
+		<!-- Increase the typesafeEnumMaxMembers from 256. -->
+
+		<jaxb:globalBindings
+			generateElementProperty="false"
+			generateIsSetMethod="false"
+			localScoping="toplevel"
+			typesafeEnumMaxMembers="256"
+		>
+			<xjc:serializable uid="20170101" />
+		</jaxb:globalBindings>
+			
+	</jaxb:bindings>
+  	
+    <jaxb:bindings schemaLocation="../xsd/log4j1.xsd">
+        <jaxb:bindings node="//xs:complexType[@name='AppenderRefType']"><jaxb:class name="AppenderRef1"/></jaxb:bindings>
+        <jaxb:bindings node="//xs:complexType[@name='AppenderType']"><jaxb:class name="Appender1"/></jaxb:bindings>
+        <jaxb:bindings node="//xs:complexType[@name='CategoryFactoryType']"> <jaxb:class name="CategoryFactory1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='CategoryType']"> <jaxb:class name="Category1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='ConfigurationType']"> <jaxb:class name="Configuration1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='ErrorHandlerType']"> <jaxb:class name="ErrorHandler1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='EventSetType']"> <jaxb:class name="EventSet1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='EventType']"> <jaxb:class name="Event1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='FilterType']"> <jaxb:class name="Filter1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='LayoutType']"> <jaxb:class name="Layout1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='LevelType']"> <jaxb:class name="Level1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='LocationInfoType']"> <jaxb:class name="LocationInfo1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='LoggerRefType']"> <jaxb:class name="LoggerRef1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='LoggerType']"> <jaxb:class name="Logger1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='MessageType']"> <jaxb:class name="Message1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='NDCType']"> <jaxb:class name="Ndc1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='ParamType']"> <jaxb:class name="Param1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='PriorityType']"> <jaxb:class name="Priority1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='RendererType']"> <jaxb:class name="Renderer1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='RootRefType']"> <jaxb:class name="RootRef1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='RootType']"> <jaxb:class name="Root1"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='ThrowableType']"> <jaxb:class name="Throwable1"/> </jaxb:bindings>
+    </jaxb:bindings>
+
+  	<jaxb:bindings schemaLocation="../xsd/log4j2.xsd">
+  	<jaxb:bindings node="//xs:complexType[@name='AppenderRefType']"> <jaxb:class name="AppenderRef2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='AppendersType']"> <jaxb:class name="Appenders2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='AppenderType']"> <jaxb:class name="Appender2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='ConfigurationType']"> <jaxb:class name="Configuration2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='ConsoleType']"> <jaxb:class name="Console2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='CustomLevelType']"> <jaxb:class name="CustomLevel2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='FilterType']"> <jaxb:class name="Filter2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='KeyValuePairType']"> <jaxb:class name="KeyValuePair2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='LayoutType']"> <jaxb:class name="Layout2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='LoggerType']"> <jaxb:class name="Logger2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='PatternLayoutType']"> <jaxb:class name="PatternLayout2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='PropertyType']"> <jaxb:class name="Property2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='RootType']"> <jaxb:class name="Root2"/> </jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='ThresholdFilterType']"> <jaxb:class name="ThresholdFilter2"/> </jaxb:bindings>
+        <!-- rename the value element -->
+        <jaxb:bindings node="//xs:complexType[@name='KeyValuePairType']">
+            <jaxb:bindings node=".//xs:attribute[@name='key']">
+                <jaxb:property name="KeyAttribute"/>
+            </jaxb:bindings>
+            <jaxb:bindings node=".//xs:attribute[@name='value']">
+                <jaxb:property name="ValueAttribute"/>
+            </jaxb:bindings>
+        </jaxb:bindings>
+    </jaxb:bindings>
+
+</jaxb:bindings>

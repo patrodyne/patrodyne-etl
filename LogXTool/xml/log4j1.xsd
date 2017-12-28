@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://logging.apache.org/log4j/1.0/config"
+	targetNamespace="http://logging.apache.org/log4j/1.0/config"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+>
+	<xs:element name="configuration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="renderer" type="RendererType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="appender" type="AppenderType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="category" type="CategoryType"/>
+					<xs:element name="logger" type="LoggerType"/>
+				</xs:choice>
+				<xs:element name="root" type="RootType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="categoryFactory" type="CategoryFactoryType" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="log4j" type="xs:string" use="optional" default="http://jakarta.apache.org/log4j/"/>
+			<xs:attribute name="threshold" use="optional" default="null">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="all"></xs:enumeration>
+						<xs:enumeration value="debug"></xs:enumeration>
+						<xs:enumeration value="info"></xs:enumeration>
+						<xs:enumeration value="warn"></xs:enumeration>
+						<xs:enumeration value="error"></xs:enumeration>
+						<xs:enumeration value="fatal"></xs:enumeration>
+						<xs:enumeration value="off"></xs:enumeration>
+						<xs:enumeration value="null"></xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="debug" use="optional" default="null">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="true"></xs:enumeration>
+						<xs:enumeration value="false"></xs:enumeration>
+						<xs:enumeration value="null"></xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="AppenderType">
+		<xs:sequence>
+			<xs:element name="errorHandler" type="ErrorHandlerType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="layout" type="LayoutType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="filter" type="FilterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="appender-ref" type="AppenderRefType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" use="required"/>
+		<xs:attribute name="name" type="xs:ID" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="RootType">
+		<xs:sequence>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="priority" type="PriorityType"/>
+				<xs:element name="level" type="LevelType"/>
+			</xs:choice>
+			<xs:element name="appender-ref" type="AppenderRefType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="RootRefType"></xs:complexType>
+
+	<xs:complexType name="ParamType">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="LayoutType">
+		<xs:sequence>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="AppenderRefType">
+		<xs:attribute name="ref" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="LoggerType">
+		<xs:sequence>
+			<xs:element name="level" type="LevelType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="appender-ref" type="AppenderRefType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="additivity" use="optional" default="true">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="true"></xs:enumeration>
+					<xs:enumeration value="false"></xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="LoggerRefType">
+		<xs:attribute name="ref" type="xs:IDREF" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="FilterType">
+		<xs:sequence>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="LevelType">
+		<xs:sequence>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" use="optional"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="LocationInfoType">
+		<xs:attribute name="class" type="xs:string" use="required"/>
+		<xs:attribute name="method" type="xs:string" use="required"/>
+		<xs:attribute name="file" type="xs:string" use="required"/>
+		<xs:attribute name="line" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="ThrowableType" mixed="true"></xs:complexType>
+
+	<xs:complexType name="CategoryType">
+		<xs:sequence>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="priority" type="PriorityType"/>
+				<xs:element name="level" type="LevelType"/>
+			</xs:choice>
+			<xs:element name="appender-ref" type="AppenderRefType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" use="optional"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="additivity" use="optional" default="true">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="true"></xs:enumeration>
+					<xs:enumeration value="false"></xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="CategoryFactoryType">
+		<xs:sequence>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="ErrorHandlerType">
+		<xs:sequence>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="root-ref" type="RootRefType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="logger-ref" type="LoggerRefType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="appender-ref" type="AppenderRefType" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="EventType">
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="message" type="MessageType"/>
+				<xs:element name="NDC" type="NDCType"/>
+				<xs:element name="throwable" type="ThrowableType"/>
+				<xs:element name="locationInfo" type="LocationInfoType"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="logger" type="xs:string" use="required"/>
+		<xs:attribute name="level" type="xs:string" use="required"/>
+		<xs:attribute name="thread" type="xs:string" use="required"/>
+		<xs:attribute name="timestamp" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="EventSetType">
+		<xs:sequence>
+			<xs:element name="event" type="EventType"/>
+		</xs:sequence>
+		<xs:attribute name="log4j" type="xs:string" use="optional" default="http://jakarta.apache.org/log4j/"/>
+		<xs:attribute name="version" use="optional" default="1.2">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="1.1"></xs:enumeration>
+					<xs:enumeration value="1.2"></xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="includesLocationInfo" use="optional" default="true">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="true"></xs:enumeration>
+					<xs:enumeration value="false"></xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="MessageType" mixed="true"></xs:complexType>
+
+	<xs:complexType name="NDCType" mixed="true"></xs:complexType>
+
+	<xs:complexType name="PriorityType">
+		<xs:sequence>
+			<xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" use="optional"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="RendererType">
+		<xs:attribute name="renderedClass" type="xs:string" use="required"/>
+		<xs:attribute name="renderingClass" type="xs:string" use="required"/>
+	</xs:complexType>
+
+</xs:schema>
