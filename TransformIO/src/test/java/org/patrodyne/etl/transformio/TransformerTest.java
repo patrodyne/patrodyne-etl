@@ -133,6 +133,9 @@ public class TransformerTest
 			batch.getTarget().setRecord(targetRecord );
 			// Transform #2
 			assertEquals(source.replace('|', '\t'), transformer.transform(batch, source));
+			// Review source fields
+			for ( Field field : sourceRecord.getFields() )
+				log.info(">"+field+"<");
 		}
 		catch (Exception e)
 		{

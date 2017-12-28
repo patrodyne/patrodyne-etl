@@ -386,7 +386,7 @@ abstract public class Transformer
 	 * 
 	 * @return a new batch with a simple source, target and transform.
 	 */
-	protected static Batch newBatch()
+	public static Batch newBatch()
 	{
 		Batch batch = new Batch();
 
@@ -1123,6 +1123,17 @@ abstract public class Transformer
 		}
 	}
 
+	/**
+	 * Notify user of an exception for a given type.
+	 * 
+	 * @param type The message type.
+	 * @param ex The exception to derive a notification message.
+	 */
+	public static void notification(MessageType type, Exception ex)
+	{
+		notification(type, message(ex));
+	}
+	
 	/**
 	 * Notify user of a message for a given type.
 	 * 

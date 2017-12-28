@@ -5,7 +5,12 @@
 	xmlns="http://www.w3.org/2001/XMLSchema" 
 	xmlns:tns="http://patrodyne.org/etl/TransformIO" 
 	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.1"
+	xmlns:basic="http://jaxb2-commons.dev.java.net/basic"
+	xmlns:equals="http://jaxb2-commons.dev.java.net/basic/equals"
+	xmlns:hashCode="http://jaxb2-commons.dev.java.net/basic/hashCode"
+	xmlns:toString="http://jaxb2-commons.dev.java.net/basic/toString"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	jxb:extensionBindingPrefixes="basic equals hashCode toString"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb ./bindingschema_2_0.xsd"
 >
     <element name="batch" type="tns:batchType"/>
@@ -241,11 +246,15 @@ the transformation script where error handling can be better implemented.</p>
    					<attribute name="name" type="string"
    						use="required">
    					</attribute>
-   					<attribute name="get" type="string"
-   						use="required">
+   					<attribute name="get" type="string" use="required">
+						<annotation>
+							<appinfo><basic:ignored/></appinfo>
+						</annotation>
    					</attribute>
-   					<attribute name="set" type="string"
-   						use="required">
+   					<attribute name="set" type="string" use="required">
+						<annotation>
+							<appinfo><basic:ignored/></appinfo>
+						</annotation>
    					</attribute>
    				</complexType>
    			</element>

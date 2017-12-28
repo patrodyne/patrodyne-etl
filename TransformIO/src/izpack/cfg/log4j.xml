@@ -17,6 +17,7 @@
 	-->
 
 	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Encoding" value="UTF-8"/>
 		<param name="Threshold" value="TRACE"/>
 		<param name="Follow" value="true"/>
 		<layout class="org.apache.log4j.PatternLayout">
@@ -25,16 +26,17 @@
 	</appender>
 
 	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="log/TransformIO.log" />
+		<param name="File" value="log/Rolling.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Encoding" value="UTF-8"/>
 		<param name="Append" value="true" />				
 		<param name="Threshold" value="DEBUG"/>
-		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
 		<layout class="org.apache.log4j.PatternLayout">
 			<!-- Tabbed Pattern: Date Priority [Category] (Thread) Message\n 
-			<param name="ConversionPattern" value="%d\t%p\t(%t)\t[%c]\t%m%n"/>
+			<param name="ConversionPattern" value="%d{HH:mm:ss,SSS}\t%p\t(%t)\t[%c]\t%m%n"/>
 			-->
 			<!-- Tabbed Pattern: Date Priority [Category] Message\n -->
-			<param name="ConversionPattern" value="%d\t%p\t[%c]\t%m%n"/>
+			<param name="ConversionPattern" value="%d{HH:mm:ss,SSS}\t%p\t[%c]\t%m%n"/>
 		</layout>			
 	</appender>
 
@@ -47,11 +49,11 @@
 	</appender>
 
 	<!-- 
-		Category names are defined by the developer. Usually package names are used
-		as category names. Categories control logging verbosity. The developer
+		Logger names are defined by the developer. Usually package names are used
+		as logger names. Categories control logging verbosity. The developer
 		instruments code using log methods such as 'log.error(message)',
 		'log.debug(message)', etc. Here 'debug' and 'error' are examples of
-		priority values. The verbosity increases according the the priority value:
+		level values. The verbosity increases according the the level value:
 			FATAL: The process cannot function.
 			ERROR: The process can function but a job cannot be completed.
 			WARN:  The job can be completed but after a recoverable exception.
@@ -70,25 +72,25 @@
 						development life cycle.
 	-->
 
-	<category name="charva">	<priority value="INFO"/>	</category>
-	<category name="charvax">	<priority value="INFO"/>	</category>
-	<category name="java">		<priority value="INFO"/>	</category>
-	<category name="javax">		<priority value="INFO"/>	</category>
-	<category name="com">		<priority value="INFO"/>	</category>
-	<category name="edu">		<priority value="INFO"/>	</category>
-	<category name="net">		<priority value="INFO"/>	</category>
-	<category name="org">		<priority value="INFO"/>	</category>
-	<category name="sun">		<priority value="INFO"/>	</category>
+	<logger name="charva">	<level value="INFO"/>	</logger>
+	<logger name="charvax">	<level value="INFO"/>	</logger>
+	<logger name="java">	<level value="INFO"/>	</logger>
+	<logger name="javax">	<level value="INFO"/>	</logger>
+	<logger name="com">		<level value="INFO"/>	</logger>
+	<logger name="edu">		<level value="INFO"/>	</logger>
+	<logger name="net">		<level value="INFO"/>	</logger>
+	<logger name="org">		<level value="INFO"/>	</logger>
+	<logger name="sun">		<level value="INFO"/>	</logger>
 
-	<category name="org.patrodyne.etl">		<priority value="TRACE"/>	</category>
-	<category name="org.patrodyne.etl.cli">	<priority value="DEBUG"/>	</category>
+	<logger name="org.patrodyne.etl">		<level value="TRACE"/>	</logger>
+	<logger name="org.patrodyne.etl.cli">	<level value="DEBUG"/>	</logger>
 
 	<!-- 
-		Root declares the default priority value and the active appenders.	
+		Root declares the default level value and the active appenders.	
 		<appender-ref ref="CHAINSAW"/>
 	-->
 	<root>
-		<priority value="TRACE"/>
+		<level value="TRACE"/>
 		<appender-ref ref="CONSOLE"/>
 		<appender-ref ref="FILE"/>
 	</root>

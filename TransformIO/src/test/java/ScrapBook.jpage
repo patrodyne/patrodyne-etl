@@ -1,0 +1,2 @@
+SourceTable sourceTable = new SourceTable(); 
+TargetTable sourceTable = new TargetTable(); 

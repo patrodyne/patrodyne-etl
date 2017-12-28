@@ -1,0 +1,5 @@
+Item    Source  Target
+------- ------- -------
+Name    F01     F03
+Get     (.*)\n  (.*)
+Set     $1      $1\n
