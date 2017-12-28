@@ -18,6 +18,7 @@ import org.patrodyne.etl.logxtool.commands.Log4j1XmlToLogbackXml;
 public class Main
 {
 	public static final String PROGRAM_NAME = "LogXTool";
+	public static final String KEY_HELP = "HELP";
 	public static final String KEY_SOURCE = "SOURCE";
 	public static final String KEY_TARGET = "TARGET";
 	public static final String KEY_SOURCE_TYPE = "SOURCETYPE";
@@ -35,10 +36,14 @@ public class Main
 		try
 		{
 			Properties options = parseOptions(args);
-			validateOptions(options);
-			Main main = new Main();
-			main.execute(options);
-
+			if ( !options.containsKey(KEY_HELP) )
+			{
+				validateOptions(options);
+				Main main = new Main();
+				main.execute(options);
+			}
+			else
+				showUsage();
 		}
 		catch (Throwable t)
 		{
